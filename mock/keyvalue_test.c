@@ -35,7 +35,7 @@ int main(int argc, char** argv)
   CuSuiteRun(suite);
   CuSuiteSummary(suite, output);
   CuSuiteDetails(suite, output);
-  printf("%s\n", output->buffer);
+  printf("%s %s\n", argv[0], output->buffer);
   return suite->failCount;
 }
 
