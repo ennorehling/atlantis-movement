@@ -24,6 +24,14 @@ static void test_region_create_same_twice(CuTest * tc)
   CuAssertPtrEquals(tc, r1, r2);
 }
 
+static void test_region_list(CuTest * tc)
+{
+  region * r1 = r_create(0, 1);
+  region * r2 = r_create(1, 2);
+  CuAssertTrue(tc, r1->next==0 || r2->next==0);
+  CuAssertTrue(tc, r1->next==r2 || r2->next==r1);
+}
+
 int main(int argc, char** argv)
 {
   CuString *output = CuStringNew();
@@ -31,6 +39,7 @@ int main(int argc, char** argv)
 
   SUITE_ADD_TEST(suite, test_region_create);
   SUITE_ADD_TEST(suite, test_region_create_same_twice);
+  SUITE_ADD_TEST(suite, test_region_list);
   
   CuSuiteRun(suite);
   CuSuiteSummary(suite, output);
