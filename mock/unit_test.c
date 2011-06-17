@@ -6,6 +6,19 @@
 #define NULL (void *)0
 #endif
 
+/*
+static void unit_setup()
+{
+  region * r;
+  while ((r = r_begin())!=0) {
+    unit * u;
+    while ((u=r->units)!=0) {
+      u_destroy(u);
+    }
+    r_destroy(r);
+  }
+}
+*/
 static void test_unit_create(CuTest * tc)
 {
   unit * u = u_create();
@@ -20,13 +33,26 @@ static void test_unit_create(CuTest * tc)
   CuAssertTrue(tc, u->uid!=u2->uid);
 }
 
+static void test_unit_create_no_id_reuse(CuTest * tc)
+{
+  unit * u;
+  int uid;
+
+  u = u_create();
+  uid = u->uid;
+  u_destroy(u);
+  u = u_create();
+  CuAssertTrue(tc, u->uid!=uid);
+}
+
 int main(int argc, char** argv)
 {
   CuString *output = CuStringNew();
   CuSuite *suite = CuSuiteNew();
 
   SUITE_ADD_TEST(suite, test_unit_create);
-  
+  SUITE_ADD_TEST(suite, test_unit_create_no_id_reuse);
+
   CuSuiteRun(suite);
   CuSuiteSummary(suite, output);
   CuSuiteDetails(suite, output);

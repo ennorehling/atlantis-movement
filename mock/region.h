@@ -6,6 +6,7 @@ struct keyvalue;
 typedef struct region {
   struct region * next;
   int x, y;
+  struct unit * units;
   struct keyvalue * stats;
 } region;
 

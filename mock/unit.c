@@ -11,3 +11,8 @@ unit * u_create(void)
   u->next = 0;
   return u;
 }
+
+void u_destroy(unit * u)
+{
+  free(u);
+}

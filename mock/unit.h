@@ -10,5 +10,6 @@ typedef struct unit {
 } unit;
 
 struct unit * u_create(void);
+void u_destroy(unit * u);
 
 #endif

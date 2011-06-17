@@ -24,6 +24,7 @@ static void test_region_create(CuTest * tc)
   
   CuAssertPtrNotNull(tc, r);
   CuAssertPtrEquals(tc, 0, r->stats);
+  CuAssertPtrEquals(tc, 0, r->units);
 
   CuAssertIntEquals(tc, 1, r->x);
   CuAssertIntEquals(tc, 2, r->y);
