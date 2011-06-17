@@ -10,5 +10,7 @@ typedef struct region {
 } region;
 
 struct region * r_create(int x, int y);
-
+void r_destroy(struct region * r);
+struct region * r_begin(void);
+struct region * r_get(int x, int y);
 #endif
