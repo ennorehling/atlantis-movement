@@ -7,11 +7,22 @@
 #define NULL (void *)0
 #endif
 
+static void test_interface(CuTest * tc)
+{
+  CuAssertPtrNotNull(tc, svc.reset);
+  CuAssertPtrNotNull(tc, svc.units);
+  CuAssertPtrNotNull(tc, svc.units->create);
+  CuAssertPtrNotNull(tc, svc.units->get_uid);
+  CuAssertPtrNotNull(tc, svc.units->get_region);
+}
+
 static void test_unit_create(CuTest * tc)
 {
   struct unit * u;
-  
+
+  test_interface(tc);
   svc.reset();
+
   u = svc.units->create();
   
   CuAssertPtrNotNull(tc, u);
@@ -23,6 +34,9 @@ static void test_unit_create_no_id_reuse(CuTest * tc)
 {
   struct unit * u;
   int uid;
+
+  test_interface(tc);
+  svc.reset();
 
   u = svc.units->create();
   uid = svc.units->get_uid(u);
