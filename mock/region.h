@@ -1,6 +1,8 @@
 #ifndef MOCK_REGION_H
 #define MOCK_REGION_H
 
+#define MAXDIRECTIONS 6
+
 struct keyvalue;
 
 typedef struct region {

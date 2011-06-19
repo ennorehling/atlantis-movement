@@ -1,15 +1,16 @@
-#include "../platform.h"
 #include <cutest/CuTest.h>
 #include <stdio.h>
 
 #include "game.h"
 #include "region.h"
 #include "unit.h"
+#include "../platform.h"
 
 void test_interface(CuTest * tc)
 {
   CuAssertPtrNotNull(tc, svc.reset);
   CuAssertPtrNotNull(tc, svc.get_regions);
+  CuAssertTrue(tc, 0!=svc.max_directions);
 
   CuAssertPtrNotNull(tc, svc.regions);
   CuAssertPtrNotNull(tc, svc.regions->create);

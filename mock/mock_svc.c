@@ -115,6 +115,7 @@ struct icursor linked_region_cursor = {
 struct iregion regions = {
   &r_create,
   &r_destroy,
+  &r_get,
   &region_get_xy,
   &region_get_adj,
   &region_get_units,
@@ -130,6 +131,7 @@ void * game_get_regions(icursor ** ic) {
 struct igame svc = {
   &units,
   &regions,
+  MAXDIRECTIONS,
   
   &reset_game,
   &game_get_regions,

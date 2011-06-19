@@ -5,6 +5,7 @@
 
 #include <cutest/CuTest.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 static void test_region_create(CuTest * tc)
 {
@@ -138,6 +139,47 @@ static void test_region_remove_units(CuTest * tc)
   if (icur->destroy) icur->destroy(cur);
 }
 
+void test_region_get_at(CuTest * tc)
+{
+  struct region * r;
+
+  test_interface(tc);
+  svc.reset();
+
+  r = svc.regions->create(4, 2);
+  CuAssertPtrEquals(tc, r, svc.regions->get_at(4, 2));
+}
+
+void test_region_adj(CuTest * tc)
+{
+  struct region * r, ** adj, ** buf;
+  int i;
+
+  test_interface(tc);
+  svc.reset();
+  
+  for (i=0;i!=9;++i) {
+    svc.regions->create(i%3-1, i/3-1);
+  }
+  r = svc.regions->get_at(0, 0);
+
+  adj = malloc(sizeof(struct region *) * svc.max_directions);
+  buf = malloc(sizeof(struct region *) * svc.max_directions);
+  svc.regions->get_adj(r, adj);
+  for (i=0;i!=svc.max_directions;++i) {
+    int j;
+    CuAssertPtrNotNull(tc, adj[i]);
+    svc.regions->get_adj(adj[i], buf);
+    for (j=0;j!=svc.max_directions;++j) {
+      if (buf[j]==r) break;
+    }
+    CuAssertTrue(tc, j<svc.max_directions);
+  }
+
+  free(buf);
+  free(adj);
+}
+
 void add_region_tests(CuSuite *suite)
 {
   SUITE_ADD_TEST(suite, test_region_create);
@@ -146,4 +188,6 @@ void add_region_tests(CuSuite *suite)
   SUITE_ADD_TEST(suite, test_region_add_units_in_order);
   SUITE_ADD_TEST(suite, test_region_iterate_units);
   SUITE_ADD_TEST(suite, test_region_remove_units);
+  SUITE_ADD_TEST(suite, test_region_get_at);
+  SUITE_ADD_TEST(suite, test_region_adj);
 }
