@@ -5,7 +5,7 @@ INCLUDES = -I$(CUTEST) -I.
 
 all: tests
 
-MOCK_SRCS = ../mock/region.c ../mock/unit.c ../mock/keyvalue.c
+MOCK_SRCS = ../mock/region.c ../mock/unit.c ../mock/keyvalue.c ../mock/mock_svc.c
 MOCK_HDRS = ../mock/region.h ../mock/unit.h ../mock/keyvalue.h
 
 LIB_SRCS = movement.c
