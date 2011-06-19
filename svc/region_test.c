@@ -1,7 +1,7 @@
-#include "../platform.h"
 #include "game.h"
 #include "region.h"
 #include "cursor.h"
+#include "../platform.h"
 
 #include <cutest/CuTest.h>
 #include <stdio.h>
@@ -113,6 +113,30 @@ static void test_region_iterate_units(CuTest * tc)
   if (icur->destroy) icur->destroy(cur);
 }
 
+static void test_region_remove_units(CuTest * tc)
+{
+  struct region * r;
+  struct unit * u1, * u2, * buffer[4];
+  void * cur;
+  struct icursor * icur;
+
+  test_interface(tc);
+  svc.reset();
+
+  r = svc.regions->create(0, 0);
+  u1 = svc.units->create();
+  u2 = svc.units->create();
+  svc.regions->add_unit(r, u1);
+  svc.regions->add_unit(r, u2);
+
+  svc.regions->remove_unit(r, u1);
+  CuAssertPtrEquals(tc, 0, svc.units->get_region(u1));
+
+  cur = svc.regions->get_units(r, &icur);
+  CuAssertIntEquals(tc, 1, icur->get(cur, 4, (void**)buffer));
+  CuAssertPtrEquals(tc, u2, buffer[0]);
+  if (icur->destroy) icur->destroy(cur);
+}
 
 void add_region_tests(CuSuite *suite)
 {
@@ -121,4 +145,5 @@ void add_region_tests(CuSuite *suite)
   SUITE_ADD_TEST(suite, test_region_add_units);
   SUITE_ADD_TEST(suite, test_region_add_units_in_order);
   SUITE_ADD_TEST(suite, test_region_iterate_units);
+  SUITE_ADD_TEST(suite, test_region_remove_units);
 }

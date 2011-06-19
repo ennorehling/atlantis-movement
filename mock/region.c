@@ -61,7 +61,7 @@ void r_remove_unit(struct region * r, struct unit * u)
 {
   unit ** up = &r->units;
   assert(kv_get(u->stats, "region")==r);
-  while (*up!=0) {
+  while (*up!=u) {
     up = &(*up)->next;
   }
   *up = u->next;
