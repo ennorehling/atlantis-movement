@@ -67,10 +67,11 @@ static int luc_get(void * cursor, int n, void * results[]) {
 
 static int luc_advance(void ** cursor, int n) {
   int i = 0;
-  for (i=0;*cursor && n;++i,--n) {
-    unit * u = (*cursor);
-    cursor = (void **)&u->next;
+  unit * u = (unit *)*cursor;
+  for (i=0;u && n;++i,--n) {
+    u = u->next;
   }
+  *cursor = (void *)u;
   return i;
 }
 
@@ -97,10 +98,11 @@ static int lrc_get(void * cursor, int n, void * results[]) {
 
 static int lrc_advance(void ** cursor, int n) {
   int i = 0;
-  for (i=0;*cursor && n;++i,--n) {
-    region * r = (*cursor);
-    cursor = (void **)&r->next;
+  region * r = (region *)*cursor;
+  for (i=0;r && n;++i,--n) {
+    r = r->next;
   }
+  *cursor = (void *)r;
   return i;
 }
 
@@ -116,6 +118,8 @@ struct iregion regions = {
   &region_get_xy,
   &region_get_adj,
   &region_get_units,
+  &r_add_unit,
+  &r_remove_unit,
 };
 
 void * game_get_regions(icursor ** ic) {

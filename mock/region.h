@@ -14,4 +14,7 @@ struct region * r_create(int x, int y);
 void r_destroy(struct region * r);
 struct region * r_begin(void);
 struct region * r_get(int x, int y);
+void r_add_unit(struct region * r, struct unit * u);
+void r_remove_unit(struct region * r, struct unit * u);
+
 #endif

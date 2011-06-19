@@ -1,5 +1,8 @@
 #include "region.h"
+#include "unit.h"
+#include "keyvalue.h"
 #include <stdlib.h>
+#include <assert.h>
 
 static region * regions;
 
@@ -41,4 +44,27 @@ void r_destroy(region * r)
   }
   *rp = r->next;
   free(r);
+}
+
+void r_add_unit(struct region * r, struct unit * u)
+{
+  unit ** up = &r->units;
+  assert(u->next==0);
+  while (*up) {
+    up = &(*up)->next;
+  }
+  *up = u;
+  kv_set(&u->stats, "region", r);
+}
+
+void r_remove_unit(struct region * r, struct unit * u)
+{
+  unit ** up = &r->units;
+  assert(kv_get(u->stats, "region")==r);
+  while (*up!=0) {
+    up = &(*up)->next;
+  }
+  *up = u->next;
+  u->next = 0;
+  kv_set(&u->stats, "region", 0);
 }
