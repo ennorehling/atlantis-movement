@@ -45,17 +45,8 @@ static void test_unit_create_no_id_reuse(CuTest * tc)
   CuAssertTrue(tc, u->uid!=uid);
 }
 
-int main(int argc, char** argv)
+void add_unit_tests(CuSuite *suite)
 {
-  CuString *output = CuStringNew();
-  CuSuite *suite = CuSuiteNew();
-
   SUITE_ADD_TEST(suite, test_unit_create);
   SUITE_ADD_TEST(suite, test_unit_create_no_id_reuse);
-
-  CuSuiteRun(suite);
-  CuSuiteSummary(suite, output);
-  CuSuiteDetails(suite, output);
-  printf("%s %s\n", argv[0], output->buffer);
-  return suite->failCount;
 }

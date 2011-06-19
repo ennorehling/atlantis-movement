@@ -89,21 +89,12 @@ static void test_region_get(CuTest * tc)
   CuAssertPtrEquals(tc, 0, r_get(0, 0));
 }
 
-int main(int argc, char** argv)
+void add_region_tests(CuSuite *suite)
 {
-  CuString *output = CuStringNew();
-  CuSuite *suite = CuSuiteNew();
-
   SUITE_ADD_TEST(suite, test_region_create);
   SUITE_ADD_TEST(suite, test_region_destroy);
   SUITE_ADD_TEST(suite, test_region_create_same_twice);
   SUITE_ADD_TEST(suite, test_region_list);
   SUITE_ADD_TEST(suite, test_region_iteration);
   SUITE_ADD_TEST(suite, test_region_get);
-  
-  CuSuiteRun(suite);
-  CuSuiteSummary(suite, output);
-  CuSuiteDetails(suite, output);
-  printf("%s %s\n", argv[0], output->buffer);
-  return suite->failCount;
 }

@@ -25,17 +25,7 @@ static void test_keyvalue_get_set(CuTest * tc)
   CuAssertPtrEquals(tc, 0, kv_get(kv, "hello"));
 }
 
-int main(int argc, char** argv)
+void add_keyvalue_tests(CuSuite *suite)
 {
-  CuString *output = CuStringNew();
-  CuSuite *suite = CuSuiteNew();
-
   SUITE_ADD_TEST(suite, test_keyvalue_get_set);
-  
-  CuSuiteRun(suite);
-  CuSuiteSummary(suite, output);
-  CuSuiteDetails(suite, output);
-  printf("%s %s\n", argv[0], output->buffer);
-  return suite->failCount;
 }
-

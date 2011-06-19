@@ -5,22 +5,21 @@ INCLUDES = -I$(CUTEST) -I.
 
 all: tests
 
-keyvalue_test: keyvalue_test.c keyvalue.c keyvalue.h
-	@$(CC) -o $@ keyvalue_test.c keyvalue.c $(CUTEST)/cutest/CuTest.c $(INCLUDES) $(CFLAGS)
+LIB_SRCS = region.c unit.c keyvalue.c
+LIB_HDRS = region.h unit.h keyvalue.h
+LIB_TEST = region_test.c unit_test.c keyvalue_test.c
 
-unit_test: unit_test.c unit.c unit.h
-	@$(CC) -o $@ unit_test.c unit.c $(CUTEST)/cutest/CuTest.c $(INCLUDES) $(CFLAGS)
+SVC_TEST = ../svc/unit_test.c ../svc/svc_test.c
+SVC_HDRS = ../svc/game.h ../svc/unit.h ../svc/region.h
 
-region_test: region_test.c region.c region.h
-	@$(CC) -o $@ region_test.c region.c $(CUTEST)/cutest/CuTest.c $(INCLUDES) $(CFLAGS)
+mock_test: mock_test.c $(LIB_SRCS) $(LIB_HDRS) $(LIB_TEST)
+	@$(CC) -o $@ mock_test.c $(LIB_SRCS) $(CUTEST)/cutest/CuTest.c $(INCLUDES) $(CFLAGS)
 
-svc_test: mock_svc.c unit.c region.c keyvalue.c keyvalue.h unit.h region.h ../svc/unit_test.c ../svc/game.h ../svc/unit.h ../svc/region.h
-	@$(CC) -o $@ ../svc/unit_test.c mock_svc.c keyvalue.c unit.c region.c $(CUTEST)/cutest/CuTest.c $(INCLUDES) $(CFLAGS)
+svc_test: mock_svc.c $(LIB_SRCS) $(LIB_HDRS) $(LIB_TEST) $(SVC_TEST) $(SVC_HDRS)
+	@$(CC) -o $@ mock_svc.c ../svc/svc_test.c $(LIB_SRCS) $(CUTEST)/cutest/CuTest.c $(INCLUDES) $(CFLAGS)
   
-tests: keyvalue_test unit_test region_test svc_test
-	@./keyvalue_test
-	@./unit_test
-	@./region_test
+tests: mock_test svc_test
+	@./mock_test
 	@./svc_test
 
 clean:
