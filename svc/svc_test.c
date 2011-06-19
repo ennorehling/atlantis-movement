@@ -25,8 +25,9 @@ void test_interface(CuTest * tc)
   CuAssertPtrNotNull(tc, svc.units->get_region);
 }
 
-#include "unit_test.c"
+#include "game_test.c"
 #include "region_test.c"
+#include "unit_test.c"
 
 int main(int argc, char** argv)
 {
@@ -34,8 +35,9 @@ int main(int argc, char** argv)
   CuSuite *suite = CuSuiteNew();
 
   SUITE_ADD_TEST(suite, test_interface);
-  add_unit_tests(suite);
+  add_game_tests(suite);
   add_region_tests(suite);
+  add_unit_tests(suite);
 
   CuSuiteRun(suite);
   CuSuiteSummary(suite, output);

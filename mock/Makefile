@@ -9,7 +9,7 @@ LIB_SRCS = region.c unit.c keyvalue.c
 LIB_HDRS = region.h unit.h keyvalue.h
 LIB_TEST = region_test.c unit_test.c keyvalue_test.c
 
-SVC_TEST = ../svc/unit_test.c ../svc/region_test.c ../svc/svc_test.c
+SVC_TEST = ../svc/game_test.c ../svc/unit_test.c ../svc/region_test.c ../svc/svc_test.c
 SVC_HDRS = ../svc/game.h ../svc/unit.h ../svc/region.h
 
 mock_test: mock_test.c $(LIB_SRCS) $(LIB_HDRS) $(LIB_TEST)
