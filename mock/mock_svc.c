@@ -34,6 +34,7 @@ static void unit_set_region(unit * u, region * r) {
 struct iunit units = {
   &u_create,
   &u_destroy,
+  &u_get,
   &unit_get_uid,
   &unit_get_region,
   &unit_set_region,

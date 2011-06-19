@@ -11,5 +11,6 @@ typedef struct unit {
 
 struct unit * u_create(void);
 void u_destroy(unit * u);
+struct unit * u_get(int id);
 
 #endif
