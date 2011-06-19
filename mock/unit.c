@@ -24,10 +24,11 @@ void u_destroy(unit * u)
   int i;
   for (i=0;i!=num_units;++i) {
     if (u==units[i]) {
-      units[i] = units[--num_units];
+      units[i--] = units[--num_units];
       break;
     }
   }
+  assert(i!=num_units);
   free(u);
 }
 
@@ -37,6 +38,5 @@ unit * u_get(int id)
   for (i=0;i!=num_units;++i) {
     if (units[i]->uid==id) return units[i];
   }
-  assert(i!=num_units);
   return 0;
 }

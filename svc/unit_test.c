@@ -32,8 +32,24 @@ static void test_unit_create_no_id_reuse(CuTest * tc)
   CuAssertTrue(tc, svc.units->get_uid(u)!=uid);
 }
 
+static void test_unit_get(CuTest * tc)
+{
+  struct unit * u;
+  int uid;
+  
+  test_interface(tc);
+  svc.reset();
+  
+  u = svc.units->create();
+  uid = svc.units->get_uid(u);
+  CuAssertPtrEquals(tc, u, svc.units->get(uid));
+  svc.units->destroy(u);  
+  CuAssertPtrEquals(tc, 0, svc.units->get(uid));
+}
+
 void add_unit_tests(CuSuite *suite)
 {
   SUITE_ADD_TEST(suite, test_unit_create);
+  SUITE_ADD_TEST(suite, test_unit_get);
   SUITE_ADD_TEST(suite, test_unit_create_no_id_reuse);
 }
