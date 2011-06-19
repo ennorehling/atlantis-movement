@@ -3,19 +3,6 @@
 #include <cutest/CuTest.h>
 #include <stdio.h>
 
-#ifndef NULL
-#define NULL (void *)0
-#endif
-
-static void test_interface(CuTest * tc)
-{
-  CuAssertPtrNotNull(tc, svc.reset);
-  CuAssertPtrNotNull(tc, svc.units);
-  CuAssertPtrNotNull(tc, svc.units->create);
-  CuAssertPtrNotNull(tc, svc.units->get_uid);
-  CuAssertPtrNotNull(tc, svc.units->get_region);
-}
-
 static void test_unit_create(CuTest * tc)
 {
   struct unit * u;

@@ -1,24 +1,7 @@
+#include "../platform.h"
 #include "unit.h"
 #include <cutest/CuTest.h>
-#include <stdio.h>
 
-#ifndef NULL
-#define NULL (void *)0
-#endif
-
-/*
-static void unit_setup()
-{
-  region * r;
-  while ((r = r_begin())!=0) {
-    unit * u;
-    while ((u=r->units)!=0) {
-      u_destroy(u);
-    }
-    r_destroy(r);
-  }
-}
-*/
 static void test_unit_create(CuTest * tc)
 {
   unit * u = u_create();

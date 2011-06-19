@@ -1,6 +1,5 @@
 #include "region.h"
 #include <cutest/CuTest.h>
-#include <stdio.h>
 
 #ifndef NULL
 #define NULL (void *)0
