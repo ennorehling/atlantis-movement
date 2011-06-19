@@ -1,10 +1,7 @@
+#include "../platform.h"
 #include "keyvalue.h"
 #include <cutest/CuTest.h>
 #include <stdio.h>
-
-#ifndef NULL
-#define NULL (void *)0
-#endif
 
 static void test_keyvalue_get_set(CuTest * tc)
 {

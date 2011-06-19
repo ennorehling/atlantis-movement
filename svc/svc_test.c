@@ -1,13 +1,10 @@
+#include "../platform.h"
 #include <cutest/CuTest.h>
 #include <stdio.h>
 
 #include "game.h"
 #include "region.h"
 #include "unit.h"
-
-#ifndef NULL
-#define NULL (void *)0
-#endif
 
 void test_interface(CuTest * tc)
 {

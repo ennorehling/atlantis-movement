@@ -1,13 +1,10 @@
+#include "../platform.h"
 #include "game.h"
 #include "region.h"
 #include "cursor.h"
 
 #include <cutest/CuTest.h>
 #include <stdio.h>
-
-#ifndef NULL
-#define NULL (void *)0
-#endif
 
 static void test_region_create(CuTest * tc)
 {

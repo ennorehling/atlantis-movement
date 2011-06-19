@@ -1,9 +1,6 @@
+#include "../platform.h"
 #include "region.h"
 #include <cutest/CuTest.h>
-
-#ifndef NULL
-#define NULL (void *)0
-#endif
 
 static void setup_region()
 {
