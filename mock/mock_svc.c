@@ -123,7 +123,15 @@ struct icursor linked_region_cursor = {
 
 int region_get_movement_cost(const region * from, const region * to)
 {
-  return 1;
+  region * adj[MAXDIRECTIONS];
+  int i;
+  region_get_adj(from, adj);
+  for (i=0;i!=MAXDIRECTIONS;++i) {
+    if (adj[i]==to) {
+      return 1;
+    }
+  }
+  return -1;
 }
 
 struct iregion regions = {

@@ -1,4 +1,4 @@
-CFLAGS = -Wall -g
+CFLAGS = -Wall -Werror -g
 CC = gcc
 CUTEST = ..
 INCLUDES = -I$(CUTEST) -I.

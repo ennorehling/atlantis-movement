@@ -28,6 +28,11 @@ void do_movement(void) {
         for (i=0;i!=((n<0)?32:n);++i) {
           struct region * next = plan[i];
           int cost = svc.regions->get_movement_cost(here, next);
+          if (cost<0) {
+            /* illegal move */
+            steps = 0;
+            break;
+          }
           if (cost>steps) {
             /* journey's end */
             steps = 0;
