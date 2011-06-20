@@ -49,10 +49,10 @@ int u_get_moves(const unit * u, struct region * result[], int offset, int n) {
 
   assert(offset>=0);
   assert(n>=0);
-  for (i=0;i!=n && path[i+offset];++i) {
+  for (i=0;i!=n && path && path[i+offset];++i) {
     result[i] = path[i+offset];
   }
-  if (n && path[i+offset]) return -1;
+  if (n && path && path[i+offset]) return -1;
   return i;
 }
 

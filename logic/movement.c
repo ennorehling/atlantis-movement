@@ -25,7 +25,7 @@ void do_movement(void) {
         int i;
 
         n = svc.units->get_moves(u, plan, offset, 32);
-        for (i=0;i!=(n<0)?32:n;++i) {
+        for (i=0;i!=((n<0)?32:n);++i) {
           struct region * next = plan[i];
           int cost = svc.regions->get_movement_cost(here, next);
           if (cost>steps) {

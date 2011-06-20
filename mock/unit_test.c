@@ -65,10 +65,19 @@ static void test_unit_path(CuTest * tc)
   CuAssertPtrEquals(tc, (struct region *)(path+1), result[0]);
 }
 
+static void test_unit_path_none(CuTest * tc)
+{
+  unit * u;
+
+  u = u_create();
+  CuAssertIntEquals(tc, 0, u_get_moves(u, 0, 0, 4));
+}
+
 void add_unit_tests(CuSuite *suite)
 {
   SUITE_ADD_TEST(suite, test_unit_create);
   SUITE_ADD_TEST(suite, test_unit_create_no_id_reuse);
   SUITE_ADD_TEST(suite, test_unit_get);
   SUITE_ADD_TEST(suite, test_unit_path);
+  SUITE_ADD_TEST(suite, test_unit_path_none);
 }

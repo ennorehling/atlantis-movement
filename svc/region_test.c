@@ -180,6 +180,18 @@ void test_region_adj(CuTest * tc)
   free(adj);
 }
 
+static void test_region_movement_cost(CuTest * tc)
+{
+  struct region * r1, * r2, * r3;
+
+  r1 = svc.regions->create(0, 0);
+  r2 = svc.regions->create(1, 0);
+  r3 = svc.regions->create(2, 0);
+  
+  CuAssertTrue(tc, svc.regions->get_movement_cost(r1, r2)>0);
+  CuAssertTrue(tc, svc.regions->get_movement_cost(r1, r3)<0);
+}
+
 void add_region_tests(CuSuite *suite)
 {
   SUITE_ADD_TEST(suite, test_region_create);
@@ -190,4 +202,5 @@ void add_region_tests(CuSuite *suite)
   SUITE_ADD_TEST(suite, test_region_remove_units);
   SUITE_ADD_TEST(suite, test_region_get_at);
   SUITE_ADD_TEST(suite, test_region_adj);
+  SUITE_ADD_TEST(suite, test_region_movement_cost);
 }
