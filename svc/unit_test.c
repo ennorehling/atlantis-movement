@@ -15,6 +15,29 @@ static void test_unit_create(CuTest * tc)
   CuAssertPtrNotNull(tc, u);
   CuAssertPtrEquals(tc, 0, svc.units->get_region(u));
   CuAssertTrue(tc, 0!=svc.units->get_uid(u));
+
+}
+
+static void test_unit_get_movement_speed(CuTest * tc)
+{
+  struct unit * u;
+
+  test_interface(tc);
+  svc.reset();
+
+  u = svc.units->create();
+  CuAssertTrue(tc, svc.units->get_movement_speed(u)>=0);
+}
+
+static void test_unit_get_moves(CuTest * tc)
+{
+  struct unit * u;
+
+  test_interface(tc);
+  svc.reset();
+
+  u = svc.units->create();
+  CuAssertIntEquals(tc, 0, svc.units->get_moves(u, 0, 0, 0));
 }
 
 static void test_unit_create_no_id_reuse(CuTest * tc)
@@ -52,4 +75,6 @@ void add_unit_tests(CuSuite *suite)
   SUITE_ADD_TEST(suite, test_unit_create);
   SUITE_ADD_TEST(suite, test_unit_get);
   SUITE_ADD_TEST(suite, test_unit_create_no_id_reuse);
+  SUITE_ADD_TEST(suite, test_unit_get_moves);
+  SUITE_ADD_TEST(suite, test_unit_get_movement_speed);
 }
