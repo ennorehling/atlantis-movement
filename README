@@ -1,3 +1,26 @@
+This code is an attempt to write a set of testable rules components
+for Atlantis-like PBEM servers. The overall design goal is to make
+that logic independent from the objects in the actual game (Atlantis,
+Atlantis 5 and Eressea have the same basic objects, but different
+codebases). There are a few components to this,
+and they are somewhat neatly spread over these directories:
+
+svc:
+  abstract interfaces to access the game objects. These are pretty
+  much just headers containing function pointers for every possible
+  operation on the specific game's data, and all game logic is written
+  in terms of these interfaces, never accessing the actual
+  implementation. There is test coverage for these interfaces, to make
+  sure that your game's implementation ot the interface is correct.
+
+mock:
+  a super simple data layer you can use to mock the game for tests
+  without having to use a game-specific library.
+
+logic:
+  game logic implementation. All logic is implemented in terms of the
+  interfaces defined in the svc direcory.
+  
                      _ _
               _     //` `\
           _,-"\%   // /``\`\
