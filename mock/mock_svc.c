@@ -34,8 +34,7 @@ static void unit_set_region(unit * u, region * r) {
 }
 
 static int unit_get_movement_speed(const unit * u) {
-  const char * speed = (const char *)kv_get(u->stats, "speed");
-  return speed ? atoi(speed) : 0;
+  return kv_geti(u->stats, "speed");
 }
 
 struct iunit units = {
@@ -122,6 +121,11 @@ struct icursor linked_region_cursor = {
   &lrc_advance
 };
 
+int region_get_movement_cost(const region * from, const region * to)
+{
+  return 0;
+}
+
 struct iregion regions = {
   &r_create,
   &r_destroy,
@@ -131,6 +135,7 @@ struct iregion regions = {
   &region_get_units,
   &r_add_unit,
   &r_remove_unit,
+  &region_get_movement_cost
 };
 
 void * game_get_regions(icursor ** ic) {

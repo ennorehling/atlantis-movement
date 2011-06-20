@@ -59,4 +59,3 @@ int u_get_moves(const unit * u, struct region * result[], int offset, int n) {
 void u_set_moves(unit * u, struct region * path[]) {
   kv_set(&u->stats, "path", (void *)path);
 }
-

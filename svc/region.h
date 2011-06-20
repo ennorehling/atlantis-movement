@@ -19,6 +19,7 @@ typedef struct iregion {
   void * (*get_units)(const struct region *, struct icursor ** ic);
   void (*add_unit)(struct region *, struct unit *);
   void (*remove_unit)(struct region *, struct unit *);
+  int (*get_movement_cost)(const struct region * from, const struct region * to);
 } iregion;
 
 #endif

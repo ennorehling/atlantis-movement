@@ -41,3 +41,11 @@ void * kv_get(const struct keyvalue * root, const char * key)
   }
   return 0;
 }
+
+int kv_seti(struct keyvalue ** pkv, const char * key, int value) {
+  return (int)kv_set(pkv, key, (void *)value);
+}
+
+int kv_geti(const struct keyvalue * kv, const char * key) {
+  return (int)kv_get(kv, key);
+}
