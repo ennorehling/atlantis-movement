@@ -14,6 +14,9 @@ typedef struct iunit {
   int (*get_uid)(const struct unit *);
   struct region * (*get_region)(const struct unit *);
   void (*set_region)(struct unit *, struct region *);
+  
+  int (*get_moves)(const struct unit *, struct region * result[], int n);
+  int (*get_movement_speed)(const struct unit *);
 } iunit;
 
 #endif

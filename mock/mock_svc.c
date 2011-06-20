@@ -7,6 +7,8 @@
 #include "keyvalue.h"
 #include "region.h"
 
+#include <stdlib.h>
+
 static void reset_game(void) {
   region * r;
   while ((r = r_begin())!=0) {
@@ -31,6 +33,15 @@ static void unit_set_region(unit * u, region * r) {
   kv_set(&u->stats, "region", r);
 }
 
+static int unit_get_moves(const unit * u, region * result[], int n) {
+  return 0;
+}
+
+static int unit_get_movement_speed(const unit * u) {
+  const char * speed = (const char *)kv_get(u->stats, "speed");
+  return speed ? atoi(speed) : 0;;
+}
+
 struct iunit units = {
   &u_create,
   &u_destroy,
@@ -38,6 +49,8 @@ struct iunit units = {
   &unit_get_uid,
   &unit_get_region,
   &unit_set_region,
+  &unit_get_moves,
+  &unit_get_movement_speed,
 };
 
 static void region_get_xy(const region * r, int *x, int * y) {

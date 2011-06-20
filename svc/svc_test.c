@@ -24,6 +24,8 @@ void test_interface(CuTest * tc)
   CuAssertPtrNotNull(tc, svc.units->get_uid);
   CuAssertPtrNotNull(tc, svc.units->get_region);
   CuAssertPtrNotNull(tc, svc.units->get);
+  CuAssertPtrNotNull(tc, svc.units->get_moves);
+  CuAssertPtrNotNull(tc, svc.units->get_movement_speed);
 }
 
 #include "game_test.c"
