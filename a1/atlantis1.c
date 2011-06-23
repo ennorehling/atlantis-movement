@@ -7,17 +7,16 @@
 */
 
 #include	<stdio.h>
-#include	<io.h>
 #include	<stdlib.h>
 #include	<string.h>
 #include	<math.h>
 #include	<ctype.h>
 #include	<assert.h>
-#include	<direct.h>
 #include	<time.h>
-#include	<dos.h>
 #include	<stddef.h>
 #include	<limits.h>
+
+#undef UNLINK_EXISTING_REPORTS
 
 #define	NAMESIZE					81
 #define	DISPLAYSIZE				161
@@ -1565,7 +1564,7 @@ unit *getunit (region *r,unit *u)
 	return 0;
 }
 
-_cdecl strpcmp (const void *s1,const void *s2)
+int strpcmp (const void *s1,const void *s2)
 {
 	return strcmpl (*(char **)s1,*(char **)s2);
 }
@@ -1694,9 +1693,9 @@ unit *createunit (region *r1)
 	}
 }
 
-_cdecl scramblecmp (void *p1,void *p2)
+int scramblecmp (const void *p1, const void *p2)
 {
-	return *((long *)p1) - *((long *)p2);
+	return *((const long *)p1) - *((const long *)p2);
 }
 
 void scramble (void *v1,int n,int width)
@@ -3656,7 +3655,7 @@ void reports (void)
 
 	mkdir ("reports");
 	mkdir ("nreports");
-
+#ifdef UNLINK_EXISTING_REPORTS
 	fd = findfirst ("reports/*.*",0);
 
 	while (fd)
@@ -3674,7 +3673,7 @@ void reports (void)
 		unlink (buf);
 		fd = findnext ();
 	}
-
+#endif
 	for (f = factions; f; f = f->next)
 		report (f);
 
@@ -6878,6 +6877,7 @@ void addunits (void)
 
 void initgame (void)
 {
+#ifdef TODO
 	int i;
 	struct FIND *fd;
 
@@ -6907,6 +6907,7 @@ void initgame (void)
 
 		readgame ();
 	}
+#endif
 }
 
 void processturn (void)
@@ -6946,7 +6947,7 @@ LOOP:
 	writemap ();
 }
 
-_cdecl main (void)
+int main (void)
 {
 	rndno = time (0);
 
