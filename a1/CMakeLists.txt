@@ -21,10 +21,11 @@ endif (WIN32)
 #include_directories (../libc/default)
 
 set (SERVER_SRCS
- atlantis1.c
+ atlantis1.c nqlibc.c
 )
 
 set (SERVER_HDRS
+ nqlibc.h
 )
 
 add_executable (atlantis ${SERVER_SRCS} ${SERVER_HDRS})
