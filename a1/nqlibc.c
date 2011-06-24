@@ -1,5 +1,8 @@
 #include "nqlibc.h"
-
+#include <ctype.h>
+#ifdef LINUX
+#include <strings.h>
+#endif
 int strcmpl(const char *a, const char * b)
 {
     return strcasecmp(a, b);

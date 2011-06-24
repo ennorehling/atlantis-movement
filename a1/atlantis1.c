@@ -6,6 +6,7 @@
 	sold or used commercially without prior written permission from the author.
 */
 
+#include	"nqlibc.h"
 #include	<stdio.h>
 #include	<stdlib.h>
 #include	<string.h>
@@ -200,7 +201,6 @@ typedef struct strlist
 } strlist;
 
 struct unit;
-typedef struct unit unit;
 
 typedef struct building
 {
@@ -228,12 +228,12 @@ typedef struct region
 	int x,y;
 	char name[NAMESIZE];
 	struct region *connect[4];
-	char terrain;
+	int terrain;
 	int peasants;
 	int money;
 	building *buildings;
 	ship *ships;
-	unit *units;
+	struct unit *units;
 	int immigrants;
 } region;
 
@@ -271,7 +271,7 @@ typedef struct faction
 	int money;
 } faction;
 
-struct unit
+typedef struct unit
 {
 	struct unit *next;
 	int no;
@@ -282,24 +282,24 @@ struct unit
 	faction *faction;
 	building *building;
 	ship *ship;
-	char owner;
-	char behind;
-	char guard;
+	int owner;
+	int behind;
+	int guard;
 	char thisorder[NAMESIZE];
 	char lastorder[NAMESIZE];
-	char combatspell;
+	int combatspell;
 	int skills[MAXSKILLS];
 	int items[MAXITEMS];
-	char spells[MAXSPELLS];
+	int spells[MAXSPELLS];
 	strlist *orders;
 	int alias;
 	int dead;
 	int learning;
 	int n;
 	int *litems;
-	char side;
-	char isnew;
-};
+	int side;
+	int isnew;
+} unit;
 
 typedef struct order
 {
@@ -313,23 +313,23 @@ typedef struct troop
 	struct troop *next;
 	unit *unit;
 	int lmoney;
-	char status;
-	char side;
-	char attacked;
-	char weapon;
-	char missile;
-	char skill;
-	char armor;
-	char behind;
-	char inside;
-	char reload;
-	char canheal;
-	char runesword;
-	char invulnerable;
-	char power;
-	char shieldstone;
-	char demoralized;
-	char dazzled;
+	int status;
+	int side;
+	int attacked;
+	int weapon;
+	int missile;
+	int skill;
+	int armor;
+	int behind;
+	int inside;
+	int reload;
+	int canheal;
+	int runesword;
+	int invulnerable;
+	int power;
+	int shieldstone;
+	int demoralized;
+	int dazzled;
 } troop;
 
 unsigned rndno;
@@ -341,7 +341,7 @@ int turn;
 region *regions;
 faction *factions;
 
-char *keywords[] =
+const char *keywords[] =
 {
 	"accept",
 	"address",
@@ -392,7 +392,7 @@ char *keywords[] =
 	"work",
 };
 
-char *terrainnames[] =
+const char *terrainnames[] =
 {
 	"ocean",
 	"plain",
@@ -401,7 +401,7 @@ char *terrainnames[] =
 	"swamp",
 };
 
-char *regionnames[] =
+const char *regionnames[] =
 {
 	"Aberaeron",
 	"Aberdaron",
@@ -735,22 +735,22 @@ int maxfoodoutput[] =
 	10000,
 };
 
-char productivity[][4] =
+int productivity[][4] =
 {
-	0,0,0,0,
-	0,0,0,1,
-	1,0,1,0,
-	0,1,0,0,
-	0,1,0,0,
+	{0,0,0,0},
+	{0,0,0,1},
+	{1,0,1,0},
+	{0,1,0,0},
+	{0,1,0,0},
 };
 
 int maxoutput[][4] =
 {
-	  0,  0,  0,  0,
-	  0,  0,  0,200,
-	200,  0,200,  0,
-	  0,200,  0,  0,
-	  0,100,  0,  0,
+	{  0,  0,  0,  0},
+	{  0,  0,  0,200},
+	{200,  0,200,  0},
+	{  0,200,  0,  0},
+	{  0,100,  0,  0},
 };
 
 char *shiptypenames[] =
@@ -795,9 +795,9 @@ char *skillnames[] =
 	"magic",
 };
 
-char *itemnames[][MAXITEMS] =
+const char *itemnames[][MAXITEMS] =
 {
-	"iron",
+	{"iron",
 	"wood",
 	"stone",
 	"horse",
@@ -817,9 +817,9 @@ char *itemnames[][MAXITEMS] =
 	"Shieldstone",
 	"Staff of Fire",
 	"Staff of Lightning",
-	"Wand of Teleportation",
+	"Wand of Teleportation"},
 
-	"iron",
+	{"iron",
 	"wood",
 	"stone",
 	"horses",
@@ -839,10 +839,10 @@ char *itemnames[][MAXITEMS] =
 	"Shieldstones",
 	"Staffs of Fire",
 	"Staffs of Lightning",
-	"Wands of Teleportation",
+	"Wands of Teleportation"},
 };
 
-char itemskill[] =
+int itemskill[] =
 {
 	SK_MINING,
 	SK_LUMBERJACK,
@@ -855,7 +855,7 @@ char itemskill[] =
 	SK_ARMORER,
 };
 
-char rawmaterial[] =
+int rawmaterial[] =
 {
 	0,
 	0,
@@ -896,7 +896,7 @@ char *spellnames[] =
 	"Teleport",
 };
 
-char spelllevel[] =
+int spelllevel[] =
 {
 	4,
 	2,
@@ -924,7 +924,7 @@ char spelllevel[] =
 	3,
 };
 
-char iscombatspell[] =
+int iscombatspell[] =
 {
 	1,
 	1,
@@ -1123,7 +1123,7 @@ char *spelldata[] =
 	"to cast.",
 };
 
-atoip (char *s)
+int atoip (char *s)
 {
 	int n;
 
@@ -1147,7 +1147,7 @@ void nstrcpy (char *to,char *from,int n)
 	*to = 0;
 }
 
-void scat (char *s)
+void scat (const char *s)
 {
 	strcat (buf,s);
 }
@@ -1178,7 +1178,7 @@ void *cmalloc (int n)
 	return p;
 }
 
-rnd (void)
+int rnd (void)
 {
 	rndno = rndno * 1103515245 + 12345;
 	return (rndno >> 16) & 0x7FFF;
@@ -1292,7 +1292,7 @@ void freelist (void *p1)
 	}
 }
 
-listlen (void *l)
+int listlen (void *l)
 {
 	int i;
 	list *p;
@@ -1302,7 +1302,7 @@ listlen (void *l)
 	return i;
 }
 
-effskill (unit *u,int i)
+int effskill (unit *u,int i)
 {
 	int n,j,result;
 
@@ -1322,7 +1322,7 @@ effskill (unit *u,int i)
 	return result;
 }
 
-ispresent (faction *f,region *r)
+int ispresent (faction *f,region *r)
 {
 	unit *u;
 
@@ -1333,7 +1333,7 @@ ispresent (faction *f,region *r)
 	return 0;
 }
 
-cansee (faction *f,region *r,unit *u)
+int cansee (faction *f,region *r,unit *u)
 {
 	int n,o;
 	int cansee;
@@ -1398,7 +1398,7 @@ char *getstr (void)
 	return igetstr (0);
 }
 
-geti (void)
+int geti (void)
 {
 	return atoip (getstr ());
 }
@@ -1569,7 +1569,7 @@ int strpcmp (const void *s1,const void *s2)
 	return strcmpl (*(char **)s1,*(char **)s2);
 }
 
-findkeyword (char *s)
+int findkeyword (char *s)
 {
 	char **sp;
 
@@ -1590,17 +1590,17 @@ findkeyword (char *s)
 	return sp - keywords;
 }
 
-igetkeyword (char *s)
+int igetkeyword (char *s)
 {
 	return findkeyword (igetstr (s));
 }
 
-getkeyword (void)
+int getkeyword (void)
 {
 	return findkeyword (getstr ());
 }
 
-findstr (char **v,char *s,int n)
+int findstr (char **v,char *s,int n)
 {
 	int i;
 
@@ -1611,7 +1611,7 @@ findstr (char **v,char *s,int n)
 	return -1;
 }
 
-findskill (char *s)
+int findskill (char *s)
 {
 	if (!strcmpl (s,"horse"))
 		return SK_HORSE_TRAINING;
@@ -1621,12 +1621,12 @@ findskill (char *s)
 	return findstr (skillnames,s,MAXSKILLS);
 }
 
-getskill (void)
+int getskill (void)
 {
 	return findskill (getstr ());
 }
 
-finditem (char *s)
+int finditem (char *s)
 {
 	int i;
 
@@ -1642,17 +1642,17 @@ finditem (char *s)
 	return findstr (itemnames[1],s,MAXITEMS);
 }
 
-getitem (void)
+int getitem (void)
 {
 	return finditem (getstr ());
 }
 
-findspell (char *s)
+int findspell (char *s)
 {
 	return findstr (spellnames,s,MAXSPELLS);
 }
 
-getspell (void)
+int getspell (void)
 {
 	return findspell (getstr ());
 }
@@ -1726,13 +1726,13 @@ region *inputregion (void)
 
 LOOP:
 	printf ("X? ");
-	gets (buf);
+	fgets (buf, sizeof(buf), stdin);
 	if (buf[0] == 0)
 		return 0;
 	x = atoi (buf);
 
 	printf ("Y? ");
-	gets (buf);
+	fgets (buf, sizeof(buf), stdin);
 	if (buf[0] == 0)
 		return 0;
 	y = atoi (buf);
@@ -1744,6 +1744,7 @@ LOOP:
 		puts ("No such region.");
 		goto LOOP;
 	}
+	return r;
 }
 
 void addplayers (void)
@@ -1758,7 +1759,7 @@ void addplayers (void)
 		return;
 
 	printf ("Name of players file? ");
-	gets (buf);
+	fgets (buf, sizeof(buf), stdin);
 
 	if (!buf[0])
 		return;
@@ -3794,7 +3795,7 @@ void removenullfactions (void)
 	}
 }
 
-itemweight (unit *u)
+int itemweight (unit *u)
 {
 	int i;
 	int n;
@@ -3818,7 +3819,7 @@ itemweight (unit *u)
 	return n;
 }
 
-horseweight (unit *u)
+int horseweight (unit *u)
 {
 	int i;
 	int n;
@@ -3836,17 +3837,17 @@ horseweight (unit *u)
 	return n;
 }
 
-canmove (unit *u)
+int canmove (unit *u)
 {
 	return itemweight (u) - horseweight (u) - (u->number * 5) <= 0;
 }
 
-canride (unit *u)
+int canride (unit *u)
 {
 	return itemweight (u) - horseweight (u) + (u->number * 10) <= 0;
 }
 
-cansail (region *r,ship *sh)
+int cansail (region *r,ship *sh)
 {
 	int n;
 	unit *u;
@@ -3860,7 +3861,7 @@ cansail (region *r,ship *sh)
 	return n <= shipcapacity[sh->type];
 }
 
-spellitem (int i)
+int spellitem (int i)
 {
 	if (i < SP_MAKE_AMULET_OF_DARKNESS || i > SP_MAKE_WAND_OF_TELEPORTATION)
 		return -1;
@@ -6361,7 +6362,7 @@ void rs (char *s)
 	*s = 0;
 }
 
-ri (void)
+int ri (void)
 {
 	int i;
 	char buf[20];
@@ -6830,7 +6831,7 @@ void addunits (void)
 		return;
 
 	printf ("Name of units file? ");
-	gets (buf);
+	fgets (buf, sizeof(buf), stdin);
 
 	if (!buf[0])
 		return;
@@ -6913,7 +6914,7 @@ void initgame (void)
 void processturn (void)
 {
 	printf ("Name of orders file? ");
-	gets (buf);
+	fgets (buf, sizeof(buf), stdin);
 	if (!buf[0])
 		return;
 	turn++;
@@ -6928,15 +6929,14 @@ void createcontinent (void)
 {
 	int x,y;
 
-LOOP:
 	printf ("X? ");
-	gets (buf);
+	fgets (buf, sizeof(buf), stdin);
 	if (buf[0] == 0)
 		return;
 	x = atoi (buf);
 
 	printf ("Y? ");
-	gets (buf);
+	fgets (buf, sizeof(buf), stdin);
 	if (buf[0] == 0)
 		return;
 	y = atoi (buf);
@@ -6947,7 +6947,7 @@ LOOP:
 	writemap ();
 }
 
-int main (void)
+int main (int argc, char ** argv)
 {
 	rndno = time (0);
 
@@ -6960,7 +6960,7 @@ int main (void)
 	for (;;)
 	{
 		printf ("> ");
-		gets (buf);
+		fgets (buf, sizeof(buf), stdin);
 
 		switch (tolower (buf[0]))
 		{
@@ -6991,6 +6991,7 @@ int main (void)
 						"Q - Quit.");
 		}
 	}
+	return 0;
 }
 
 
