@@ -16,6 +16,9 @@
 #include	<time.h>
 #include	<stddef.h>
 #include	<limits.h>
+#ifdef LINUX
+#include	<sys/stat.h>
+#endif
 
 #undef UNLINK_EXISTING_REPORTS
 
@@ -218,7 +221,7 @@ typedef struct ship
 	int no;
 	char name[NAMESIZE];
 	char display[DISPLAYSIZE];
-	char type;
+	int type;
 	int left;
 } ship;
 
@@ -262,10 +265,10 @@ typedef struct faction
 	strlist *messages;
 	strlist *battles;
 	strlist *events;
-	char alive;
-	char attacking;
-	char seesbattle;
-	char dh;
+	int alive;
+	int attacking;
+	int seesbattle;
+	int dh;
 	int nunits;
 	int number;
 	int money;
@@ -753,7 +756,7 @@ int maxoutput[][4] =
 	{  0,100,  0,  0},
 };
 
-char *shiptypenames[] =
+const char *shiptypenames[] =
 {
 	"longboat",
 	"clipper",
@@ -774,7 +777,7 @@ int shipcost[] =
 	300,
 };
 
-char *skillnames[] =
+const char *skillnames[] =
 {
 	"mining",
 	"lumberjack",
@@ -868,7 +871,7 @@ int rawmaterial[] =
 	I_IRON,
 };
 
-char *spellnames[] =
+const char *spellnames[] =
 {
 	"Black Wind",
 	"Cause Fear",
@@ -952,7 +955,7 @@ int iscombatspell[] =
 	0,
 };
 
-char *spelldata[] =
+const char *spelldata[] =
 {
 	"This spell creates a black whirlwind of energy which destroys all life, "
 	"leaving frozen corpses with faces twisted into expressions of horror. Cast "
@@ -1123,7 +1126,7 @@ char *spelldata[] =
 	"to cast.",
 };
 
-int atoip (char *s)
+int atoip (const char *s)
 {
 	int n;
 
@@ -1135,7 +1138,7 @@ int atoip (char *s)
 	return n;
 }
 
-void nstrcpy (char *to,char *from,int n)
+void nstrcpy (char *to,const char *from,int n)
 {
 	n--;
 
@@ -1368,10 +1371,10 @@ int cansee (faction *f,region *r,unit *u)
 	return cansee;
 }
 
-char *igetstr (char *s1)
+char *igetstr (const char *s1)
 {
 	int i;
-	static char *s;
+	static const char *s;
 	static char buf[256];
 
 	if (s1)
@@ -1569,9 +1572,9 @@ int strpcmp (const void *s1,const void *s2)
 	return strcmpl (*(char **)s1,*(char **)s2);
 }
 
-int findkeyword (char *s)
+int findkeyword (const char *s)
 {
-	char **sp;
+	const char **sp;
 
 	if (!strcmpl (s,"describe"))
 		return K_DISPLAY;
@@ -1590,7 +1593,7 @@ int findkeyword (char *s)
 	return sp - keywords;
 }
 
-int igetkeyword (char *s)
+int igetkeyword (const char *s)
 {
 	return findkeyword (igetstr (s));
 }
@@ -1600,7 +1603,7 @@ int getkeyword (void)
 	return findkeyword (getstr ());
 }
 
-int findstr (char **v,char *s,int n)
+int findstr (const char *v[],const char *s,int n)
 {
 	int i;
 
@@ -1876,7 +1879,7 @@ void seed (int to,int n)
 	transmute (T_PLAIN,to,n,1);
 }
 
-regionnameinuse (char *s)
+int regionnameinuse (const char *s)
 {
 	region *r;
 
@@ -1887,7 +1890,7 @@ regionnameinuse (char *s)
 	return 0;
 }
 
-blockcoord (int x)
+int blockcoord (int x)
 {
 	return (x / (BLOCKSIZE + BLOCKBORDER*2)) * (BLOCKSIZE + BLOCKBORDER*2);
 }
@@ -2057,7 +2060,7 @@ void catstrlist (strlist **SP,strlist *S)
 	*SP = 0;
 }
 
-void sparagraph (strlist **SP,char *s,int indent,int mark)
+void sparagraph (strlist **SP,const char *s,int indent,int mark)
 {
 	int i,j,width;
 	int firstline;
@@ -2340,7 +2343,6 @@ void leave (region *r,unit *u)
 void removeempty (void)
 {
 	int i;
-	faction *f;
 	region *r;
 	ship *sh,*sh2;
 	unit *u,*u2,*u3;
@@ -2439,7 +2441,7 @@ void togglerf (unit *u,strlist *S,rfaction **r)
 		mistake2 (u,S,"Faction not found");
 }
 
-iscoast (region *r)
+int iscoast (region *r)
 {
 	int i;
 
@@ -2450,7 +2452,7 @@ iscoast (region *r)
 	return 0;
 }
 
-distribute (int old,int new,int n)
+int distribute (int old,int new,int n)
 {
 	int i;
 	int t;
@@ -2468,7 +2470,7 @@ distribute (int old,int new,int n)
 	return t;
 }
 
-armedmen (unit *u)
+int armedmen (unit *u)
 {
 	int n;
 
@@ -2513,8 +2515,8 @@ troop **maketroops (troop **tp,unit *u,int terrain)
 {
 	int i;
 	troop *t;
-	static skills[MAXSKILLS];
-	static items[MAXITEMS];
+	static int skills[MAXSKILLS];
+	static int items[MAXITEMS];
 
 	for (i = 0; i != MAXSKILLS; i++)
 		skills[i] = effskill (u,i);
@@ -2644,7 +2646,7 @@ void battlepunit (region *r,unit *u)
 			spunit (&f->battles,f,r,u,4,1);
 }
 
-contest (int a,int d)
+int contest (int a,int d)
 {
 	int i;
 	static char table[] = { 10,25,40 };
@@ -2657,7 +2659,7 @@ contest (int a,int d)
 	return rnd () % 100 < table[i];
 }
 
-hits (void)
+int hits (void)
 {
 	int k;
 
@@ -2692,31 +2694,31 @@ hits (void)
 	return k;
 }
 
-validtarget (int i)
+int validtarget (int i)
 {
 	return !ta[i].status &&
 			 ta[i].side == defender.side &&
 			 (!ta[i].behind || !infront[defender.side]);
 }
 
-canbedemoralized (int i)
+int canbedemoralized (int i)
 {
 	return validtarget (i) && !ta[i].demoralized;
 }
 
-canbedazzled (int i)
+int canbedazzled (int i)
 {
 	return validtarget (i) && !ta[i].dazzled;
 }
 
-canberemoralized (int i)
+int canberemoralized (int i)
 {
 	return !ta[i].status &&
 			 ta[i].side == attacker.side &&
 			 ta[i].demoralized;
 }
 
-selecttarget (void)
+int selecttarget (void)
 {
 	int i;
 
@@ -2743,7 +2745,7 @@ void terminate (int i)
 		runeswords[defender.side]--;
 }
 
-lovar (int n)
+int lovar (int n)
 {
 	n /= 2;
 	return (rnd () % n + 1) + (rnd () % n + 1);
@@ -2772,7 +2774,7 @@ void docombatspell (int i)
 	z = ta[i].unit->combatspell;
 	sprintf (buf,"%s casts %s",unitid (ta[i].unit),spellnames[z]);
 
-	if (shields[defender.side])
+	if (shields[defender.side]) {
 		if (rnd () & 1)
 		{
 			scat (", and gets through the shield");
@@ -2784,7 +2786,7 @@ void docombatspell (int i)
 			battlerecord (buf);
 			return;
 		}
-
+	}
 	switch (z)
 	{
 		case SP_BLACK_WIND:
@@ -2949,7 +2951,7 @@ void doshot (void)
 		terminate (di);
 }
 
-isallied (unit *u,unit *u2)
+int isallied (unit *u,unit *u2)
 {
 	rfaction *rf;
 
@@ -2966,7 +2968,7 @@ isallied (unit *u,unit *u2)
 	return 0;
 }
 
-accepts (unit *u,unit *u2)
+int accepts (unit *u,unit *u2)
 {
 	rfaction *rf;
 
@@ -2980,7 +2982,7 @@ accepts (unit *u,unit *u2)
 	return 0;
 }
 
-admits (unit *u,unit *u2)
+int admits (unit *u,unit *u2)
 {
 	rfaction *rf;
 
@@ -3016,7 +3018,7 @@ unit *shipowner (region *r,ship *sh)
 	return 0;
 }
 
-mayenter (region *r,unit *u,building *b)
+int mayenter (region *r,unit *u,building *b)
 {
 	unit *u2;
 
@@ -3024,7 +3026,7 @@ mayenter (region *r,unit *u,building *b)
 	return u2 == 0 || admits (u2,u);
 }
 
-mayboard (region *r,unit *u,ship *sh)
+int mayboard (region *r,unit *u,ship *sh)
 {
 	unit *u2;
 
@@ -3378,13 +3380,13 @@ void rpc (int c)
 	assert (outi < sizeof outbuf);
 }
 
-void rps (char *s)
+void rps (const char *s)
 {
 	while (*s)
 		rpc (*s++);
 }
 
-void centre (char *s)
+void centre (const char *s)
 {
 	int i;
 
@@ -3404,7 +3406,7 @@ void rpstrlist (strlist *S)
 	}
 }
 
-void centrestrlist (char *s,strlist *S)
+void centrestrlist (const char *s,strlist *S)
 {
 	if (S)
 	{
@@ -3416,7 +3418,7 @@ void centrestrlist (char *s,strlist *S)
 	}
 }
 
-void rparagraph (char *s,int indent,int mark)
+void rparagraph (const char *s,int indent,int mark)
 {
 	strlist *S;
 
@@ -3651,12 +3653,12 @@ void report (faction *f)
 
 void reports (void)
 {
-	struct FIND *fd;
 	faction *f;
 
-	mkdir ("reports");
-	mkdir ("nreports");
+	mkdir ("reports", 0700);
+	mkdir ("nreports", 0700);
 #ifdef UNLINK_EXISTING_REPORTS
+	struct FIND *fd;
 	fd = findfirst ("reports/*.*",0);
 
 	while (fd)
@@ -3868,7 +3870,7 @@ int spellitem (int i)
 	return i - SP_MAKE_AMULET_OF_DARKNESS + I_AMULET_OF_DARKNESS;
 }
 
-cancast (unit *u,int i)
+int cancast (unit *u,int i)
 {
 	if (u->spells[i])
 		return u->number;
@@ -3897,7 +3899,7 @@ cancast (unit *u,int i)
 	return 0;
 }
 
-magicians (faction *f)
+int magicians (faction *f)
 {
 	int n;
 	region *r;
@@ -3964,7 +3966,7 @@ void processorders (void)
 	int leader[2];
 	int lmoney;
 	int dh;
-	static litems[MAXITEMS];
+	static int litems[MAXITEMS];
 	char *s,*s2;
 	faction *f,*f2,**fa;
 	rfaction *rf;
