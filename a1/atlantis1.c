@@ -20,6 +20,8 @@
 #include	<sys/stat.h>
 #endif
 
+#include "atlantis1.h"
+
 #undef UNLINK_EXISTING_REPORTS
 
 #define	NAMESIZE					81
@@ -6949,14 +6951,10 @@ void createcontinent (void)
 	writemap ();
 }
 
-int main (int argc, char ** argv)
+int interactive (void)
 {
 	rndno = time (0);
-
-	puts ("Atlantis v1.0  " __DATE__ "\n"
-			"Copyright 1993 by Russell Wallace.\n"
-			"Type ? for list of commands.");
-
+	
 	initgame ();
 
 	for (;;)
