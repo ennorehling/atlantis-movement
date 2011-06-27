@@ -1538,20 +1538,25 @@ void connecttothis (region *r,int x,int y,int from,int to)
 	}
 }
 
+void connectregion(region * r)
+{
+	if (!r->connect[0])
+		connecttothis (r,r->x,r->y - 1,0,1);
+	if (!r->connect[1])
+		connecttothis (r,r->x,r->y + 1,1,0);
+	if (!r->connect[2])
+		connecttothis (r,r->x + 1,r->y,2,3);
+	if (!r->connect[3])
+		connecttothis (r,r->x - 1,r->y,3,2);	
+}
+
 void connectregions (void)
 {
 	region *r;
 
 	for (r = regions; r; r = r->next)
 	{
-		if (!r->connect[0])
-			connecttothis (r,r->x,r->y - 1,0,1);
-		if (!r->connect[1])
-			connecttothis (r,r->x,r->y + 1,1,0);
-		if (!r->connect[2])
-			connecttothis (r,r->x + 1,r->y,2,3);
-		if (!r->connect[3])
-			connecttothis (r,r->x - 1,r->y,3,2);
+		connectregion(r);
 	}
 }
 
@@ -1626,6 +1631,7 @@ region * createregion(int x, int y)
 	r->y = y;
 	
 	addlist (&regions,r);
+	connectregion(r);
 	return r;
 }
 
