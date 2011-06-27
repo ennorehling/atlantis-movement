@@ -19,7 +19,9 @@ static region * u_get_region(const unit * u)
   for (r=regions;r;r=r->next) {
     unit *u2;
     for (u2=r->units;u2;u2=u2->next) {
-      if (u2==u) return r;
+      if (u2==u) {
+        return r==limbo?0:r;
+      }
     }
   }
   return 0;
@@ -43,13 +45,14 @@ static int u_get_uid(const unit * u)
 
 static void u_set_region(unit *u, region *r)
 {
-  moveunit(u, u_get_region(u), r?r:limbo);
+  region * rx = u_get_region(u);
+  moveunit(u, rx?rx:limbo, r?r:limbo);
 }
 
 static void u_destroy(unit * u)
 {
   region * r = u_get_region(u);
-  destroyunit(u, r);
+  destroyunit(u, r?r:limbo);
 }
 
 static int u_get_moves(const unit * u, region *result[], int offset, int n)
@@ -124,7 +127,7 @@ void r_get_adj(const region *r, region * result[])
 void r_add_unit(region * r, unit * u)
 {
   region * rx = u_get_region(u);
-  moveunit(u, rx, r);
+  moveunit(u, rx?rx:limbo, r);
 }
 
 void r_remove_unit(region *r, unit *u)
