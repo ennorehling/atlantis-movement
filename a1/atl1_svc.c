@@ -91,6 +91,7 @@ static int get_next_units(void * cursor, int n, void * results[])
   unit * u = (unit *)cursor;
   int i = 0;
   while (u && i!=n) {
+    results[i++] = u;
     u = u->next;
   }
   return i;
