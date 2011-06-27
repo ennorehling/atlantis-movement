@@ -10,15 +10,8 @@
 #include <stdlib.h>
 
 static void reset_game(void) {
-  region * r;
-  while ((r = r_begin())!=0) {
-    unit * u;
-    while ((u = r->units)!=0) {
-      r->units = u->next;
-      u_destroy(u);
-    }
-    r_destroy(r);
-  }
+  u_free_all();
+  r_free_all();
 }
 
 static int unit_get_uid(const unit * u) {

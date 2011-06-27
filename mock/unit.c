@@ -9,6 +9,13 @@ static int max_unit = 0;
 static unit * units[MAXUNITS];
 static int num_units;
 
+void u_free_all(void)
+{
+  while (num_units!=0) {
+    u_destroy(units[0]);
+  }
+}
+
 unit * u_create(void)
 {
   unit * u = malloc(sizeof(unit));

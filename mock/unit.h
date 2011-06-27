@@ -16,5 +16,6 @@ struct unit * u_get(int id);
 
 void u_set_moves(struct unit * u, struct region * path[]);
 int u_get_moves(const struct unit * u, struct region * result[], int offset, int n);
+void u_free_all(void);
 
 #endif

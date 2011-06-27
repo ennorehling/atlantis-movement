@@ -12,6 +12,7 @@ typedef struct region {
   struct keyvalue * stats;
 } region;
 
+void r_free_all(void);
 struct region * r_create(int x, int y);
 void r_destroy(struct region * r);
 struct region * r_begin(void);

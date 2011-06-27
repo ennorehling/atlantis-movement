@@ -6,6 +6,14 @@
 
 static region * regions;
 
+void r_free_all(void)
+{
+  region * r;
+  while ((r = regions)!=0) {
+    r_destroy(r);
+  }
+}
+
 region * r_begin(void)
 {
   return regions;
@@ -32,6 +40,7 @@ region * r_create(int x, int y)
   r->y = y;
   r->stats = 0;
   r->next = regions;
+  r->units = 0;
   regions = r;
   return r;
 }
