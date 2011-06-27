@@ -93,7 +93,8 @@ void r_get_adj(const region *r, region * result[])
 
 void r_add_unit(region * r, unit * u)
 {
-  moveunit(u, u_get_region(u), r);
+  region * rx = u_get_region(u);
+  moveunit(u, rx, r);
 }
 
 void r_remove_unit(region *r, unit *u)

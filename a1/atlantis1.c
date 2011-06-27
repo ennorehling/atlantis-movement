@@ -2070,32 +2070,41 @@ void leave (region *r,unit *u)
 
 void moveunit(unit *u, region*r, region*r2)
 {
-	leave (r,u);
-	translist (&r->units,&r2->units,u);
+	if (r) {
+		leave (r,u);		
+		if (r2) {
+			translist (&r->units,&r2->units,u);
+		} else {
+			removelist(&r->units, u);
+		}
+	} else {
+		addlist(&r2->units, u);
+	}
 }
 
 void destroyunit(unit * u, region * r)
 {
 	unit *u3;
 
-	leave (r,u);
-	
-	for (u3 = r->units; u3; u3 = u3->next)
-		if (u3->faction == u->faction)
-		{
-			int i;
-			u3->money += u->money;
-			u->money = 0;
-			for (i = 0; i != MAXITEMS; i++)
-				u3->items[i] += u->items[i];
-			break;
-		}
-	
-	if (r->terrain != T_OCEAN)
-		r->money += u->money;
-	
+	if (r) {
+		leave (r,u);
+		
+		for (u3 = r->units; u3; u3 = u3->next)
+			if (u3->faction == u->faction)
+			{
+				int i;
+				u3->money += u->money;
+				u->money = 0;
+				for (i = 0; i != MAXITEMS; i++)
+					u3->items[i] += u->items[i];
+				break;
+			}
+		
+		if (r->terrain != T_OCEAN)
+			r->money += u->money;
+		removelist (&r->units,u);
+	}
 	freelist (u->orders);
-	removelist (&r->units,u);
 }
 
 void removeempty (void)
