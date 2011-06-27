@@ -4,10 +4,12 @@
 #include <svc/region.h>
 #include <svc/cursor.h>
 #include <stdlib.h>
+#include <limits.h>
 
+static region * limbo; /* where units go that are not in the world */
 
 static unit * u_create(void) {
-  unit * u = createunit(0);
+  unit * u = createunit(limbo);
   return u;
 }
 
@@ -41,7 +43,7 @@ static int u_get_uid(const unit * u)
 
 static void u_set_region(unit *u, region *r)
 {
-  moveunit(u, u_get_region(u), r);
+  moveunit(u, u_get_region(u), r?r:limbo);
 }
 
 static void u_destroy(unit * u)
@@ -72,7 +74,7 @@ struct iunit svc_units = {
 };
 
 void r_destroy(region *r)
-{ 
+{
 }
 
 void r_get_xy(const region *r, int *x, int *y)
@@ -81,14 +83,42 @@ void r_get_xy(const region *r, int *x, int *y)
   *y = r->y;
 }
 
+static int get_next_units(void * cursor, int n, void * results[])
+{
+  unit * u = (unit *)cursor;
+  int i = 0;
+  while (u && i!=n) {
+    u = u->next;
+  }
+  return i;
+}
+
+static int advance_next_units(void ** cursor, int n)
+{
+  unit ** up = (unit **)cursor;
+  int i = 0;
+  while (*up && i++!=n) {
+    up = &(*up)->next;
+  }
+  return i;
+}
+
+static struct icursor region_unit_cursor = {
+  0, &get_next_units, &advance_next_units
+};
+
 void * r_get_units(const region * r, icursor ** icur)
 {
-  return 0;
+  *icur = &region_unit_cursor;
+  return r->units;
 }
 
 void r_get_adj(const region *r, region * result[])
 {
-  
+  int i;
+  for (i=0;i!=4;++i) {
+    result[i] = r->connect[i];
+  }
 }
 
 void r_add_unit(region * r, unit * u)
@@ -99,7 +129,7 @@ void r_add_unit(region * r, unit * u)
 
 void r_remove_unit(region *r, unit *u)
 {
-  moveunit(u, r, 0);
+  moveunit(u, r, limbo);
 }
 
 int r_get_movement_cost(const region *r, const region *r2)
@@ -123,16 +153,31 @@ struct iregion svc_regions = {
 static void game_reset(void)
 {
   regions = 0;
+  limbo = createregion(INT_MAX, INT_MAX);
 }
 
 static int get_next_regions(void * cursor, int n, void * results[])
 {
-  return 0;
+  region * r = (region *)cursor;
+  int i = 0;
+  while (r && i!=n) {
+    if (r!=limbo) {
+      results[i++] = r;
+    }
+    r = r->next;
+  }
+  return i;
 }
 
 static int advance_next_regions(void ** cursor, int n)
 {
-  return 0;
+  region ** rp = (region **)cursor;
+  int i = 0;
+  while (*rp && i++!=n) {
+    if (*rp == limbo) --i;
+    rp = &(*rp)->next;
+  }
+  return i;
 }
 
 static struct icursor region_cursor = {

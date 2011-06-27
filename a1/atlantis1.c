@@ -1387,13 +1387,14 @@ unit *createunit (region *r1)
 	unit *u,*u2;
 	char v[1000];
 
+	assert(r1);
 	u = cmalloc (sizeof (unit));
 	memset (u,0,sizeof (unit));
 
 	strcpy (u->lastorder,"work");
 	u->combatspell = -1;
 
-	for (n = 0;r1; n += 1000)
+	for (n = 0;; n += 1000)
 	{
 		memset (v,0,sizeof v);
 
@@ -2070,16 +2071,11 @@ void leave (region *r,unit *u)
 
 void moveunit(unit *u, region*r, region*r2)
 {
-	if (r) {
-		leave (r,u);		
-		if (r2) {
-			translist (&r->units,&r2->units,u);
-		} else {
-			removelist(&r->units, u);
-		}
-	} else {
-		addlist(&r2->units, u);
-	}
+	assert(u);
+	assert(r);
+	assert(r2);
+	leave (r,u);		
+	translist (&r->units,&r2->units,u);
 }
 
 void destroyunit(unit * u, region * r)

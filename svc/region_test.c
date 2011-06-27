@@ -11,7 +11,7 @@ static void test_region_create(CuTest * tc)
 {
   struct region * r;
   void * cur;
-  struct icursor * icur;
+  struct icursor * icur = 0;
   int x, y;
 
   test_interface(tc);
