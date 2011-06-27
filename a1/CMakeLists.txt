@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.4)
 project (atlantis1)
 
+set (CUTEST ..)
+
 include_directories (..)
 add_definitions(-DLOGIC)
 if (WIN32)
@@ -20,17 +22,21 @@ else (WIN32)
 endif (WIN32)
 #include_directories (../libc/default)
 
-set (SERVER_SRCS
- atlantis1.c nqlibc.c main.c
+set (LIB_SRCS
+ atlantis1.c nqlibc.c
 )
 
-set (SERVER_HDRS
+set (LIB_HDRS
  nqlibc.h atlantis1.h
 )
 
-add_executable (atlantis ${SERVER_SRCS} ${SERVER_HDRS})
+add_executable (atlantis main.c ${LIB_SRCS} ${LIB_HDRS})
 if (WIN32)
 #  target_link_libraries (atlantis oly-libc)
 elseif (UNIX)
   target_link_libraries (atlantis m)
 endif (WIN32)
+
+add_executable (svc_test ../svc/svc_test.c atl1_svc.c ${CUTEST}/cutest/CuTest.c ${LIB_SRCS} ${LIB_HDRS})
+
+add_executable (atlantis1_test atlantis1_test.c ${CUTEST}/cutest/CuTest.c ${LIB_SRCS} ${LIB_HDRS})
