@@ -23,12 +23,12 @@ void test_get_moves_a1(CuTest * tc)
     CuAssertIntEquals(tc, 1, svc.units->get_moves(u, path, 0, 2));
     CuAssertPtrEquals(tc, r2, path[0]);
 
-    strcpy(u->thisorder, "move east west");
+    strcpy(u->thisorder, "sail east west");
     CuAssertIntEquals(tc, 2, svc.units->get_moves(u, path, 0, 2));
     CuAssertPtrEquals(tc, r2, path[0]);
     CuAssertPtrEquals(tc, r1, path[1]);
 
-    strcpy(u->thisorder, "move east west east");
+    strcpy(u->thisorder, "sail east west east");
     CuAssertIntEquals(tc, -1, svc.units->get_moves(u, path, 0, 2));
     CuAssertPtrEquals(tc, r2, path[0]);
     CuAssertPtrEquals(tc, r1, path[1]);
