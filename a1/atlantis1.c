@@ -1624,14 +1624,17 @@ int blockcoord (int x)
 
 region * createregion(int x, int y)
 {
-	region * r = cmalloc (sizeof (region));
-	memset (r,0,sizeof (region));
-
-	r->x = x;
-	r->y = y;
+	region * r = findregion(x, y);
+	if (!r) {
+		r = cmalloc (sizeof (region));
+		memset (r,0,sizeof (region));
 	
-	addlist (&regions,r);
-	connectregion(r);
+		r->x = x;
+		r->y = y;
+		
+		addlist (&regions,r);
+		connectregion(r);
+	}
 	return r;
 }
 

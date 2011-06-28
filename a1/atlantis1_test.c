@@ -40,6 +40,16 @@ static void test_destroyunit(CuTest * tc)
     CuAssertPtrEquals(tc, 0, r->units);    
 }
 
+static void test_createregion_once(CuTest * tc)
+{
+    region *r1, *r2;
+
+    resetgame();
+    r1 = createregion(0, 0);
+    r2 = createregion(0, 0);
+    CuAssertPtrEquals(tc, r1, r2);    
+}
+
 static void test_moveunit(CuTest * tc)
 {
     region *r, *r2;
@@ -61,6 +71,7 @@ int main(int argc, char** argv)
   CuSuite *suite = CuSuiteNew();
 
   SUITE_ADD_TEST(suite, test_createregion);
+  SUITE_ADD_TEST(suite, test_createregion_once);
   SUITE_ADD_TEST(suite, test_createunit);
   SUITE_ADD_TEST(suite, test_moveunit);
   SUITE_ADD_TEST(suite, test_destroyunit);
