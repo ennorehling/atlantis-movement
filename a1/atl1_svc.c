@@ -20,7 +20,7 @@ static region * u_get_region_i(const unit * u)
     unit *u2;
     for (u2=r->units;u2;u2=u2->next) {
       if (u2==u) {
-        return r==limbo?0:r;
+        return r;
       }
     }
   }
