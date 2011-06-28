@@ -13,7 +13,7 @@ static unit * u_create(void) {
   return u;
 }
 
-static region * u_get_region(const unit * u)
+static region * u_get_region_i(const unit * u)
 {
   region * r;
   for (r=regions;r;r=r->next) {
@@ -23,6 +23,12 @@ static region * u_get_region(const unit * u)
     }
   }
   return 0;
+}
+
+static region * u_get_region(const unit * u)
+{
+  region * r = u_get_region_i(u);
+  return (r==limbo)?0:r;
 }
 
 static unit * u_get(int uid) {
@@ -43,12 +49,12 @@ static int u_get_uid(const unit * u)
 
 static void u_set_region(unit *u, region *r)
 {
-  moveunit(u, u_get_region(u), r?r:limbo);
+  moveunit(u, u_get_region_i(u), r?r:limbo);
 }
 
 static void u_destroy(unit * u)
 {
-  region * r = u_get_region(u);
+  region * r = u_get_region_i(u);
   destroyunit(u, r);
 }
 
@@ -88,6 +94,7 @@ static int get_next_units(void * cursor, int n, void * results[])
   unit * u = (unit *)cursor;
   int i = 0;
   while (u && i!=n) {
+    results[i++] = u;
     u = u->next;
   }
   return i;
@@ -97,9 +104,11 @@ static int advance_next_units(void ** cursor, int n)
 {
   unit ** up = (unit **)cursor;
   int i = 0;
-  while (*up && i++!=n) {
+  while (*up && i!=n) {
     up = &(*up)->next;
+    ++i;
   }
+  *cursor = *up;
   return i;
 }
 
@@ -123,7 +132,7 @@ void r_get_adj(const region *r, region * result[])
 
 void r_add_unit(region * r, unit * u)
 {
-  region * rx = u_get_region(u);
+  region * rx = u_get_region_i(u);
   moveunit(u, rx, r);
 }
 
@@ -134,7 +143,13 @@ void r_remove_unit(region *r, unit *u)
 
 int r_get_movement_cost(const region *r, const region *r2)
 {
-  return 1;
+  int i;
+  for (i=0;i!=4;++i) {
+    if (r->connect[i]==r2) {
+      return 1;
+    }
+  }
+  return -1;
 }
 
 struct iregion svc_regions = {
