@@ -293,6 +293,8 @@ void destroyunit(struct unit * u, struct region * r);
 void moveunit(struct unit * u, struct region * r, struct region *r2);
 struct region *findregion (int x,int y);
 void process_movement(void);
+int igetkeyword (const char *s);
+struct region *movewhere (struct region *r);
 
-extern region * regions;
+extern struct region * regions;
 #endif

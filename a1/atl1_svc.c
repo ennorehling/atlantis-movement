@@ -60,6 +60,23 @@ static void u_destroy(unit * u)
 
 static int u_get_moves(const unit * u, region *result[], int offset, int n)
 {
+  int kwd = igetkeyword (u->thisorder);
+  if (kwd == K_MOVE || kwd==K_SAIL) {
+    region * r = u_get_region_i(u);
+    region *r2 = movewhere(r);
+    int i;
+
+    for (i=0;r2 && i!=n+offset;++i) {
+      if (i>=offset) {
+        result[i-offset] = r2;
+      }
+      r2 = movewhere(r2);
+    }
+    if (r2 && i==n+offset) {
+      return -1; /* wait, there's more! */
+    }
+    return i-offset;
+  }
   return 0;
 }
 

@@ -18,11 +18,24 @@ void test_get_moves_a1(CuTest * tc)
     r2 = createregion(1, 0);
     r2->terrain = T_PLAIN;
     u = createunit(r1);
+
     strcpy(u->thisorder, "move east");
-    
-    svc.units->get_moves(u, path, 0, 2);
+    CuAssertIntEquals(tc, 1, svc.units->get_moves(u, path, 0, 2));
     CuAssertPtrEquals(tc, r2, path[0]);
-    CuAssertPtrEquals(tc, 0, path[1]);
+
+    strcpy(u->thisorder, "move east west");
+    CuAssertIntEquals(tc, 2, svc.units->get_moves(u, path, 0, 2));
+    CuAssertPtrEquals(tc, r2, path[0]);
+    CuAssertPtrEquals(tc, r1, path[1]);
+
+    strcpy(u->thisorder, "move east west east");
+    CuAssertIntEquals(tc, -1, svc.units->get_moves(u, path, 0, 2));
+    CuAssertPtrEquals(tc, r2, path[0]);
+    CuAssertPtrEquals(tc, r1, path[1]);
+
+    CuAssertIntEquals(tc, 2, svc.units->get_moves(u, path, 1, 2));
+    CuAssertPtrEquals(tc, r1, path[0]);
+    CuAssertPtrEquals(tc, r2, path[1]);
 }
 
 void add_custom_tests(CuSuite * suite)
