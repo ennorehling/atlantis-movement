@@ -19,7 +19,9 @@ static region * u_get_region_i(const unit * u)
   for (r=regions;r;r=r->next) {
     unit *u2;
     for (u2=r->units;u2;u2=u2->next) {
-      if (u2==u) return r;
+      if (u2==u) {
+        return r==limbo?0:r;
+      }
     }
   }
   return 0;
