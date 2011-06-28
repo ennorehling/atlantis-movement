@@ -70,6 +70,8 @@ static void test_movement(CuTest * tc)
 {
     unit * u;
     region *r1, *r2;
+
+    resetgame();
     r1 = createregion(0, 0);
     r1->terrain = T_PLAIN;
     r2 = createregion(1, 0);
@@ -78,6 +80,54 @@ static void test_movement(CuTest * tc)
     strcpy(u->thisorder, "move east");
     process_movement();
     CuAssertPtrEquals(tc, u, r2->units);
+}
+
+static void test_movement_invalid_direction(CuTest * tc)
+{
+    unit * u;
+    region *r1, *r2;
+
+    resetgame();
+    r1 = createregion(0, 0);
+    r1->terrain = T_PLAIN;
+    r2 = createregion(1, 0);
+    r2->terrain = T_PLAIN;
+    u = createunit(r1);
+    strcpy(u->thisorder, "move blerg");
+    process_movement();
+    CuAssertPtrEquals(tc, u, r1->units);
+}
+
+static void test_movement_into_ocean(CuTest * tc)
+{
+    unit * u;
+    region *r1, *r2;
+
+    resetgame();
+    r1 = createregion(0, 0);
+    r1->terrain = T_PLAIN;
+    r2 = createregion(1, 0);
+    r2->terrain = T_OCEAN;
+    u = createunit(r1);
+    strcpy(u->thisorder, "move east");
+    process_movement();
+    CuAssertPtrEquals(tc, u, r1->units);
+}
+
+static void test_movement_at_sea(CuTest * tc)
+{
+    unit * u;
+    region *r1, *r2;
+
+    resetgame();
+    r1 = createregion(0, 0);
+    r1->terrain = T_OCEAN;
+    r2 = createregion(1, 0);
+    r2->terrain = T_PLAIN;
+    u = createunit(r1);
+    strcpy(u->thisorder, "move east");
+    process_movement();
+    CuAssertPtrEquals(tc, u, r1->units);
 }
 
 int main(int argc, char** argv)
@@ -91,6 +141,9 @@ int main(int argc, char** argv)
   SUITE_ADD_TEST(suite, test_moveunit);
   SUITE_ADD_TEST(suite, test_destroyunit);
   SUITE_ADD_TEST(suite, test_movement);
+  SUITE_ADD_TEST(suite, test_movement_at_sea);
+  SUITE_ADD_TEST(suite, test_movement_into_ocean);
+  SUITE_ADD_TEST(suite, test_movement_invalid_direction);
 
   CuSuiteRun(suite);
   CuSuiteSummary(suite, output);

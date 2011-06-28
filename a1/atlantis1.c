@@ -1981,10 +1981,12 @@ void spunit (strlist **SP,faction *f,region *r,unit *u,int indent,int battle)
 
 void mistake (faction *f,char *s,char *comment)
 {
-	static char buf[512];
-
-	sprintf (buf,"%s: %s.",s,comment);
-	sparagraph (&f->mistakes,buf,0,0);
+	if (f) {
+		static char buf[512];
+	
+		sprintf (buf,"%s: %s.",s,comment);
+		sparagraph (&f->mistakes,buf,0,0);
+	}
 }
 
 void mistake2 (unit *u,strlist *S,char *comment)
