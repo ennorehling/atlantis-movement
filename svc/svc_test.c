@@ -32,15 +32,27 @@ void test_interface(CuTest * tc)
 #include "region_test.c"
 #include "unit_test.c"
 
+#ifdef CUSTOM_TESTS
+extern void add_custom_tests(CuSuite * suite);
+#endif
+
+void add_svc_tests(CuSuite * suite)
+{
+  SUITE_ADD_TEST(suite, test_interface);
+  add_game_tests(suite);
+  add_region_tests(suite);
+  add_unit_tests(suite);
+}
+
 int main(int argc, char** argv)
 {
   CuString *output = CuStringNew();
   CuSuite *suite = CuSuiteNew();
 
-  SUITE_ADD_TEST(suite, test_interface);
-  add_game_tests(suite);
-  add_region_tests(suite);
-  add_unit_tests(suite);
+  add_svc_tests(suite);
+#ifdef CUSTOM_TESTS
+  add_custom_tests(suite);
+#endif
 
   CuSuiteRun(suite);
   CuSuiteSummary(suite, output);

@@ -37,6 +37,7 @@ elseif (UNIX)
   target_link_libraries (atlantis m)
 endif (WIN32)
 
-add_executable (svc_test ../svc/svc_test.c atl1_svc.c ${CUTEST}/cutest/CuTest.c ${LIB_SRCS} ${LIB_HDRS})
+add_definitions(-DCUSTOM_TESTS)
+add_executable (svc_test ../svc/svc_test.c atl1_svc_test.c atl1_svc.c ${CUTEST}/cutest/CuTest.c ${LIB_SRCS} ${LIB_HDRS})
 
 add_executable (atlantis1_test atlantis1_test.c ${CUTEST}/cutest/CuTest.c ${LIB_SRCS} ${LIB_HDRS})
