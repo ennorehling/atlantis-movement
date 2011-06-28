@@ -1999,12 +1999,16 @@ void mistakeu (unit *u,char *comment)
 
 void addevent (faction *f,char *s)
 {
-	sparagraph (&f->events,s,0,0);
+	if (f) {
+		sparagraph (&f->events,s,0,0);
+	}
 }
 
 void addbattle (faction *f,char *s)
 {
-	sparagraph (&f->battles,s,0,0);
+	if (f) {
+		sparagraph (&f->battles,s,0,0);
+	}
 }
 
 void reportevent (region *r,char *s)
@@ -3706,6 +3710,144 @@ region *movewhere (region *r)
 	return r2;
 }
 
+void process_movement(void)
+{
+	region *r, *r2;
+	unit *u, *u2, *u3;
+
+	puts ("Processing MOVE orders...");
+
+	for (r = regions; r; r = r->next)
+		for (u = r->units; u;)
+		{
+			u2 = u->next;
+
+			switch (igetkeyword (u->thisorder))
+			{
+				case K_MOVE:
+					r2 = movewhere (r);
+
+					if (!r2)
+					{
+						mistakeu (u,"Direction not recognized");
+						break;
+					}
+
+					if (r->terrain == T_OCEAN)
+					{
+						mistakeu (u,"Currently at sea");
+						break;
+					}
+
+					if (r2->terrain == T_OCEAN)
+					{
+						sprintf (buf,"%s discovers that (%d,%d) is ocean.",
+									unitid (u),r2->x,r2->y);
+						addevent (u->faction,buf);
+						break;
+					}
+
+					if (!canmove (u))
+					{
+						mistakeu (u,"Carrying too much weight to move");
+						break;
+					}
+					
+					moveunit(u, r, r2);
+					u->thisorder[0] = 0;
+
+					sprintf (buf,"%s ",unitid (u));
+					if (canride (u))
+						scat ("rides");
+					else
+						scat ("walks");
+					scat (" from ");
+					scat (regionid (r));
+					scat (" to ");
+					scat (regionid (r2));
+					scat (".");
+					addevent (u->faction,buf);
+					break;
+			}
+
+			u = u2;
+		}
+
+			/* SAIL orders */
+
+	puts ("Processing SAIL orders...");
+
+	for (r = regions; r; r = r->next)
+		for (u = r->units; u;)
+		{
+			u2 = u->next;
+
+			switch (igetkeyword (u->thisorder))
+			{
+				case K_SAIL:
+					r2 = movewhere (r);
+
+					if (!r2)
+					{
+						mistakeu (u,"Direction not recognized");
+						break;
+					}
+
+					if (!u->ship)
+					{
+						mistakeu (u,"Not on a ship");
+						break;
+					}
+
+					if (!u->owner)
+					{
+						mistakeu (u,"Ship not owned by you");
+						break;
+					}
+
+					if (r2->terrain != T_OCEAN && !iscoast (r2))
+					{
+						sprintf (buf,"%s discovers that (%d,%d) is inland.",
+									unitid (u),r2->x,r2->y);
+						addevent (u->faction,buf);
+						break;
+					}
+
+					if (u->ship->left)
+					{
+						mistakeu (u,"Ship still under construction");
+						break;
+					}
+
+					if (!cansail (r,u->ship))
+					{
+						mistakeu (u,"Too heavily loaded to sail");
+						break;
+					}
+
+					translist (&r->ships,&r2->ships,u->ship);
+
+					for (u2 = r->units; u2;)
+					{
+						u3 = u2->next;
+
+						if (u2->ship == u->ship)
+						{
+							translist (&r->units,&r2->units,u2);
+							u2->thisorder[0] = 0;
+						}
+
+						u2 = u3;
+					}
+
+					u->thisorder[0] = 0;
+					break;
+			}
+
+			u = u2;
+		}
+
+}
 void processorders (void)
 {
 	int i,j,k;
@@ -5241,139 +5383,8 @@ void processorders (void)
 			}
 		}
 
-			/* MOVE orders */
-
-	puts ("Processing MOVE orders...");
-
-	for (r = regions; r; r = r->next)
-		for (u = r->units; u;)
-		{
-			u2 = u->next;
-
-			switch (igetkeyword (u->thisorder))
-			{
-				case K_MOVE:
-					r2 = movewhere (r);
-
-					if (!r2)
-					{
-						mistakeu (u,"Direction not recognized");
-						break;
-					}
-
-					if (r->terrain == T_OCEAN)
-					{
-						mistakeu (u,"Currently at sea");
-						break;
-					}
-
-					if (r2->terrain == T_OCEAN)
-					{
-						sprintf (buf,"%s discovers that (%d,%d) is ocean.",
-									unitid (u),r2->x,r2->y);
-						addevent (u->faction,buf);
-						break;
-					}
-
-					if (!canmove (u))
-					{
-						mistakeu (u,"Carrying too much weight to move");
-						break;
-					}
-					
-					moveunit(u, r, r2);
-					u->thisorder[0] = 0;
-
-					sprintf (buf,"%s ",unitid (u));
-					if (canride (u))
-						scat ("rides");
-					else
-						scat ("walks");
-					scat (" from ");
-					scat (regionid (r));
-					scat (" to ");
-					scat (regionid (r2));
-					scat (".");
-					addevent (u->faction,buf);
-					break;
-			}
-
-			u = u2;
-		}
-
-			/* SAIL orders */
-
-	puts ("Processing SAIL orders...");
-
-	for (r = regions; r; r = r->next)
-		for (u = r->units; u;)
-		{
-			u2 = u->next;
-
-			switch (igetkeyword (u->thisorder))
-			{
-				case K_SAIL:
-					r2 = movewhere (r);
-
-					if (!r2)
-					{
-						mistakeu (u,"Direction not recognized");
-						break;
-					}
-
-					if (!u->ship)
-					{
-						mistakeu (u,"Not on a ship");
-						break;
-					}
-
-					if (!u->owner)
-					{
-						mistakeu (u,"Ship not owned by you");
-						break;
-					}
-
-					if (r2->terrain != T_OCEAN && !iscoast (r2))
-					{
-						sprintf (buf,"%s discovers that (%d,%d) is inland.",
-									unitid (u),r2->x,r2->y);
-						addevent (u->faction,buf);
-						break;
-					}
-
-					if (u->ship->left)
-					{
-						mistakeu (u,"Ship still under construction");
-						break;
-					}
-
-					if (!cansail (r,u->ship))
-					{
-						mistakeu (u,"Too heavily loaded to sail");
-						break;
-					}
-
-					translist (&r->ships,&r2->ships,u->ship);
-
-					for (u2 = r->units; u2;)
-					{
-						u3 = u2->next;
-
-						if (u2->ship == u->ship)
-						{
-							translist (&r->units,&r2->units,u2);
-							u2->thisorder[0] = 0;
-						}
-
-						u2 = u3;
-					}
-
-					u->thisorder[0] = 0;
-					break;
-			}
-
-			u = u2;
-		}
+			/* MOVE and SAIL orders */
+	process_movement();
 
 			/* Do production orders */
 

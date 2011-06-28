@@ -1,5 +1,6 @@
 #include "atlantis1.h"
 #include <cutest/CuTest.h>
+#include <string.h>
 #include <stdio.h>
 
 static void test_createregion(CuTest * tc)
@@ -65,6 +66,20 @@ static void test_moveunit(CuTest * tc)
     CuAssertPtrEquals(tc, 0, r->units);
 }
 
+static void test_movement(CuTest * tc)
+{
+    unit * u;
+    region *r1, *r2;
+    r1 = createregion(0, 0);
+    r1->terrain = T_PLAIN;
+    r2 = createregion(1, 0);
+    r2->terrain = T_PLAIN;
+    u = createunit(r1);
+    strcpy(u->thisorder, "move east");
+    process_movement();
+    CuAssertPtrEquals(tc, u, r2->units);
+}
+
 int main(int argc, char** argv)
 {
   CuString *output = CuStringNew();
@@ -75,6 +90,7 @@ int main(int argc, char** argv)
   SUITE_ADD_TEST(suite, test_createunit);
   SUITE_ADD_TEST(suite, test_moveunit);
   SUITE_ADD_TEST(suite, test_destroyunit);
+  SUITE_ADD_TEST(suite, test_movement);
 
   CuSuiteRun(suite);
   CuSuiteSummary(suite, output);

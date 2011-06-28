@@ -292,6 +292,7 @@ void resetgame(void);
 void destroyunit(struct unit * u, struct region * r);
 void moveunit(struct unit * u, struct region * r, struct region *r2);
 struct region *findregion (int x,int y);
+void process_movement(void);
 
 extern region * regions;
 #endif
