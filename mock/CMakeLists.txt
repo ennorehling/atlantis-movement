@@ -20,6 +20,10 @@ set (SVC_HDRS
   ../svc/game.h ../svc/unit.h ../svc/region.h
 )
 
-add_executable (svc_test ../svc/svc_test.c mock_svc.c ${CUTEST}/cutest/CuTest.c ${LIB_SRCS} ${LIB_HDRS} ${SVC_HDRS})
+add_executable (mock_svc_test ../svc/svc_test.c mock_svc.c ${CUTEST}/cutest/CuTest.c ${LIB_SRCS} ${LIB_HDRS} ${SVC_HDRS})
 
-add_executable (mock_test mock_test.c ${CUTEST}/cutest/CuTest.c ${LIB_SRCS} ${LIB_HDRS})
+set (MOCK_TESTS
+  keyvalue_test.c region_test.c unit_test.c
+)
+
+add_executable (mock_test mock_test.c ${MOCK_TESTS} ${CUTEST}/cutest/CuTest.c ${LIB_SRCS} ${LIB_HDRS})

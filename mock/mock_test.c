@@ -1,6 +1,9 @@
-#include "unit_test.c"
-#include "region_test.c"
-#include "keyvalue_test.c"
+#include <cutest/CuTest.h>
+#include <stdio.h>
+
+extern void add_keyvalue_tests(CuSuite * suite);
+extern void add_region_tests(CuSuite * suite);
+extern void add_unit_tests(CuSuite * suite);
 
 int main(int argc, char** argv)
 {

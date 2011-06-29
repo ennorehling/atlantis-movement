@@ -38,6 +38,6 @@ elseif (UNIX)
 endif (WIN32)
 
 add_definitions(-DCUSTOM_TESTS)
-add_executable (svc_test ../svc/svc_test.c atlantis_svc_test.c atlantis_svc.c ${CUTEST}/cutest/CuTest.c ${LIB_SRCS} ${LIB_HDRS})
+add_executable (atlantis_svc_test ../svc/svc_test.c atlantis_svc_test.c atlantis_svc.c ${CUTEST}/cutest/CuTest.c ${LIB_SRCS} ${LIB_HDRS})
 
 add_executable (atlantis_test atlantis_test.c ${CUTEST}/cutest/CuTest.c ${LIB_SRCS} ${LIB_HDRS})
