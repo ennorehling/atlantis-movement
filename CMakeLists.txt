@@ -8,4 +8,5 @@ elseif (UNIX)
 endif (WIN32)
 
 add_subdirectory(mock)
+add_subdirectory(logic)
 add_subdirectory(a1)
