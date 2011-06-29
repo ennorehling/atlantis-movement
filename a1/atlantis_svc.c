@@ -227,7 +227,7 @@ static void * game_get_regions(icursor ** icur)
 
 static void game_add_event(const char * event, ...)
 {
-  fprintf(stdout, "unhandled event '%s'", event);
+  fprintf(stdout, "unhandled event '%s'\n", event);
 }
 
 struct igame svc = {
