@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Komodo Project File - DO NOT EDIT -->
+<project id="50e8a26e-c669-43ba-9e5f-bdc142cf930b" kpf_version="5" name="atlantis.komodoproject">
+<preference-set idref="50e8a26e-c669-43ba-9e5f-bdc142cf930b">
+  <string relative="path" id="import_dirname"></string>
+  <string id="import_exclude_matches">*.*~;*.bak;*.tmp;CVS;.#*;*.pyo;*.pyc;.svn;.git;.hg;.bzr;*%*;tmp*.html;.DS_Store;*.swp;*.kpf;*.komodoproject;*.komodotools</string>
+  <string id="import_include_matches">*.c;*.h;Makefile;README;*.txt;*.sh</string>
+</preference-set>
+</project>

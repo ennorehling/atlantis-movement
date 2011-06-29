@@ -14,6 +14,7 @@ typedef struct igame {
 
   void (*reset)(void);
   void * (*get_regions)(struct icursor **);
+  void (*add_event)(const char * name, ...);
 } igame;
 
 extern struct igame svc;
