@@ -1491,6 +1491,25 @@ LOOP:
 	return r;
 }
 
+faction *createfaction(void)
+{
+	faction * f = cmalloc (sizeof (faction));
+	memset (f,0,sizeof (faction));
+
+	f->lastorders = turn;
+	f->alive = 1;
+
+	do
+	{
+		f->no++;
+	}
+	while (findfaction (f->no));
+	sprintf (f->name,"Faction %d",f->no);
+
+	addlist (&factions,f);
+	return f;
+}
+
 void addplayers (void)
 {
 	region *r;
@@ -1520,21 +1539,8 @@ void addplayers (void)
 			break;
 		}
 
-		f = cmalloc (sizeof (faction));
-		memset (f,0,sizeof (faction));
-
+		f = createfaction();
 		nstrcpy (f->addr,buf,NAMESIZE);
-		f->lastorders = turn;
-		f->alive = 1;
-
-		do
-		{
-			f->no++;
-			sprintf (f->name,"Faction %d",f->no);
-		}
-		while (findfaction (f->no));
-
-		addlist (&factions,f);
 
 		u = createunit (r);
 		u->number = 1;
@@ -1778,7 +1784,7 @@ char *shipid (ship *sh)
 	return buf;
 }
 
-char *unitid (unit *u)
+char *unitid (const unit *u)
 {
 	static char buf[NAMESIZE + 20];
 
@@ -1998,7 +2004,7 @@ void spunit (strlist **SP,faction *f,region *r,unit *u,int indent,int battle)
 	sparagraph (SP,buf,indent,(u->faction == f) ? '*' : '-');
 }
 
-void mistake (faction *f,char *s,char *comment)
+void mistake (faction *f, const char *s, const char *comment)
 {
 	if (f) {
 		static char buf[512];
@@ -2018,7 +2024,7 @@ void mistakeu (unit *u,char *comment)
 	mistake (u->faction,u->thisorder,comment);
 }
 
-void addevent (faction *f,char *s)
+void addevent (faction *f,const char *s)
 {
 	if (f) {
 		sparagraph (&f->events,s,0,0);

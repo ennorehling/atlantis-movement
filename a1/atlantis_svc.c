@@ -3,8 +3,10 @@
 #include <svc/unit.h>
 #include <svc/region.h>
 #include <svc/cursor.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <limits.h>
 
 static region * limbo; /* where units go that are not in the world */
@@ -227,6 +229,23 @@ static void * game_get_regions(icursor ** icur)
 
 static void game_add_event(const char * event, ...)
 {
+  va_list va;
+  if (strcmp(event, "illegal_move")) {
+    unit *u;
+    region *r1, *r2;
+    va_start(va, event);
+    u = va_arg(va, unit*);
+    r1 = va_arg(va, region*);
+    r2 = va_arg(va, region*);
+    va_end(va);
+    if (r2 && r2->terrain==T_OCEAN) {
+      sprintf (buf, "%s discovers that (%d,%d) is ocean.", unitid (u),r2->x,r2->y);
+      addevent(u->faction, buf);
+    }
+    if (r1 && r1->terrain==T_OCEAN) {
+      mistake (u->faction, u->thisorder, "Currently at sea");
+    }
+  }
   fprintf(stdout, "unhandled event '%s'\n", event);
 }
 

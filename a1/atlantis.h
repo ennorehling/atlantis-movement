@@ -296,7 +296,11 @@ void process_movement(void);
 int igetkeyword (const char *s);
 struct region *movewhere (struct region *r);
 struct ship *createship(struct region * r, int type);
+void addevent(struct faction *f, const char * str);
+char *unitid (const struct unit *u);
+void mistake (struct faction *f, const char *s, const char *comment);
+struct faction *createfaction(void);
 
+extern char buf[];
 extern struct region * regions;
-
 #endif

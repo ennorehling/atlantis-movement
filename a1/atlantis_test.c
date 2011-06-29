@@ -151,15 +151,19 @@ static void test_movement_into_ocean(CuTest * tc)
     r2 = createregion(1, 0);
     r2->terrain = T_OCEAN;
     u = createunit(r1);
+    u->faction = createfaction();
     strcpy(u->thisorder, "move east");
     process_movement();
     CuAssertPtrEquals(tc, u, r1->units);
+    sprintf(buf, "%s discovers that (1,0) is ocean.", unitid(u));
+    CuAssertStrEquals(tc, buf, u->faction->events->s);
 }
 
 static void test_movement_at_sea(CuTest * tc)
 {
     unit * u;
     region *r1, *r2;
+    faction * f;
 
     resetgame();
     r1 = createregion(0, 0);
@@ -167,9 +171,12 @@ static void test_movement_at_sea(CuTest * tc)
     r2 = createregion(1, 0);
     r2->terrain = T_PLAIN;
     u = createunit(r1);
+    f = createfaction();
+    u->faction = f;
     strcpy(u->thisorder, "move east");
     process_movement();
     CuAssertPtrEquals(tc, u, r1->units);
+    CuAssertStrEquals(tc, "move east: Currently at sea.", f->mistakes->s);
 }
 
 int main(int argc, char** argv)
