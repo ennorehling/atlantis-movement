@@ -30,6 +30,7 @@ void do_movement(void) {
           int cost = svc.regions->get_movement_cost(here, next);
           if (cost<0) {
             /* illegal move */
+            svc.add_event("illegal_move", u, here, next);
             steps = 0;
             break;
           }

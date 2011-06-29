@@ -68,11 +68,25 @@ static void test_move_too_far(CuTest * tc) {
   CuAssertPtrEquals(tc, path[0], svc.units->get_region(u));
 }
 
+#define MAXEVENTS 32
+static const char * events[MAXEVENTS];
+static int num_events;
+static void record_events(const char * event, ...) {
+  if (num_events<MAXEVENTS) {
+    events[num_events++] = event;
+  }
+}
+
 static void test_move_illegal(CuTest * tc) {
+  void (*event_cb)(const char *, ...);
   unit * u;
   region * r, ** path;
 
   svc.reset();
+
+  event_cb = svc.add_event;
+  svc.add_event = record_events;
+  num_events = 0;
 
   r = svc.regions->create(0, 0);
   u = svc.units->create();
@@ -87,6 +101,10 @@ static void test_move_illegal(CuTest * tc) {
   svc.units->set_region(u, r);
   do_movement();
   CuAssertPtrEquals(tc, r, svc.units->get_region(u));
+
+  CuAssertIntEquals(tc, 1, num_events);
+  CuAssertStrEquals(tc, "illegal_move", events[0]);
+  svc.add_event = event_cb;
 }
 
 int main(int argc, char** argv)

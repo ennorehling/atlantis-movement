@@ -21,6 +21,13 @@ logic:
   game logic implementation. All logic is implemented in terms of the
   interfaces defined in the svc direcory.
   
+a1:
+  this is the original Atlantis, by Russell Wallace. I made a few changes to
+  get it compiled with gcc, and extracted some code into functions, but mostly
+  kept it the way it was to make sure that the interfaces I was writing didn't
+  depend on a particular implementation.
+  
+And now, a dragon. Because you can't have too many dragons:
                      _ _
               _     //` `\
           _,-"\%   // /``\`\
