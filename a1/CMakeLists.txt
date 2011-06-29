@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.4)
-project (atlantis1)
+project (a1)
 
 set (CUTEST ..)
 
@@ -23,11 +23,11 @@ endif (WIN32)
 #include_directories (../libc/default)
 
 set (LIB_SRCS
- atlantis1.c nqlibc.c
+ atlantis.c nqlibc.c
 )
 
 set (LIB_HDRS
- nqlibc.h atlantis1.h
+ nqlibc.h atlantis.h
 )
 
 add_executable (atlantis main.c ${LIB_SRCS} ${LIB_HDRS})
@@ -38,6 +38,6 @@ elseif (UNIX)
 endif (WIN32)
 
 add_definitions(-DCUSTOM_TESTS)
-add_executable (svc_test ../svc/svc_test.c atl1_svc_test.c atl1_svc.c ${CUTEST}/cutest/CuTest.c ${LIB_SRCS} ${LIB_HDRS})
+add_executable (svc_test ../svc/svc_test.c atlantis_svc_test.c atlantis_svc.c ${CUTEST}/cutest/CuTest.c ${LIB_SRCS} ${LIB_HDRS})
 
-add_executable (atlantis1_test atlantis1_test.c ${CUTEST}/cutest/CuTest.c ${LIB_SRCS} ${LIB_HDRS})
+add_executable (atlantis_test atlantis_test.c ${CUTEST}/cutest/CuTest.c ${LIB_SRCS} ${LIB_HDRS})

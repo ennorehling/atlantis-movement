@@ -1,4 +1,4 @@
-#include "atlantis1.h"
+#include "atlantis.h"
 #include <svc/game.h>
 #include <svc/unit.h>
 #include <svc/region.h>

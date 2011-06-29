@@ -1,4 +1,4 @@
-#include "atlantis1.h"
+#include "atlantis.h"
 #include <stdio.h>
 
 int main (int argc, char ** argv)

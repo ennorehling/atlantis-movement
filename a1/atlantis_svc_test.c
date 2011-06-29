@@ -1,7 +1,7 @@
 #include <svc/game.h>
 #include <svc/unit.h>
 #include <svc/region.h>
-#include "atlantis1.h"
+#include "atlantis.h"
 #include <cutest/CuTest.h>
 #include <string.h>
 

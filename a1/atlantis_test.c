@@ -1,4 +1,4 @@
-#include "atlantis1.h"
+#include "atlantis.h"
 #include <cutest/CuTest.h>
 #include <string.h>
 #include <stdio.h>

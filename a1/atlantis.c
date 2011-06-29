@@ -20,7 +20,7 @@
 #include	<sys/stat.h>
 #endif
 
-#include "atlantis1.h"
+#include "atlantis.h"
 
 #undef UNLINK_EXISTING_REPORTS
 

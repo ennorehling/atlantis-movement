@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ATLANTIS1_H
-#define ATLANTIS1_H
+#ifndef ATLANTIS_H
+#define ATLANTIS_H
 
 #define	NAMESIZE					81
 #define	DISPLAYSIZE				161
