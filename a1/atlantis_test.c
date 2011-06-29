@@ -82,6 +82,48 @@ static void test_movement(CuTest * tc)
     CuAssertPtrEquals(tc, u, r2->units);
 }
 
+static void test_sailing(CuTest * tc)
+{
+    ship *sh;
+    unit *u;
+    region *r1, *r2;
+
+    resetgame();
+    r1 = createregion(0, 0);
+    r1->terrain = T_OCEAN;
+    r2 = createregion(1, 0);
+    r2->terrain = T_OCEAN;
+    u = createunit(r1);
+    sh = createship(r1, SH_LONGBOAT);
+    u->ship = sh;
+    u->owner = 1;
+    strcpy(u->thisorder, "sail east");
+    process_movement();
+    CuAssertPtrEquals(tc, u, r2->units);
+    CuAssertPtrEquals(tc, sh, r2->ships);
+}
+
+static void test_move_captain(CuTest * tc)
+{
+    ship *sh;
+    unit *u;
+    region *r1, *r2;
+
+    resetgame();
+    r1 = createregion(0, 0);
+    r1->terrain = T_PLAIN;
+    r2 = createregion(1, 0);
+    r2->terrain = T_PLAIN;
+    u = createunit(r1);
+    sh = createship(r1, SH_LONGBOAT);
+    u->ship = sh;
+    u->owner = 1;
+    strcpy(u->thisorder, "move east");
+    process_movement();
+    CuAssertPtrEquals(tc, u, r2->units);
+    CuAssertPtrEquals(tc, sh, r1->ships);
+}
+
 static void test_movement_invalid_direction(CuTest * tc)
 {
     unit * u;
@@ -141,6 +183,8 @@ int main(int argc, char** argv)
   SUITE_ADD_TEST(suite, test_moveunit);
   SUITE_ADD_TEST(suite, test_destroyunit);
   SUITE_ADD_TEST(suite, test_movement);
+  SUITE_ADD_TEST(suite, test_sailing);
+  SUITE_ADD_TEST(suite, test_move_captain);
   SUITE_ADD_TEST(suite, test_movement_at_sea);
   SUITE_ADD_TEST(suite, test_movement_into_ocean);
   SUITE_ADD_TEST(suite, test_movement_invalid_direction);

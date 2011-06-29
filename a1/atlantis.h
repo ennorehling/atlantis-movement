@@ -295,6 +295,8 @@ struct region *findregion (int x,int y);
 void process_movement(void);
 int igetkeyword (const char *s);
 struct region *movewhere (struct region *r);
+struct ship *createship(struct region * r, int type);
 
 extern struct region * regions;
+
 #endif

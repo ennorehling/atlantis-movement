@@ -1380,6 +1380,25 @@ int getspell (void)
 	return findspell (getstr ());
 }
 
+ship *createship(region * r, int type)
+{
+	ship * sh = cmalloc (sizeof (ship));
+	memset (sh,0,sizeof (ship));
+	
+	sh->type = type;
+
+	do
+	{
+		sh->no++;
+		sprintf (sh->name, "Ship %d",sh->no);
+	}
+	while (findship (sh->no));
+	
+	addlist (&r->ships,sh);
+	
+	return sh;
+}
+
 unit *createunit (region *r1)
 {
 	int i,n;
@@ -5511,21 +5530,8 @@ CREATESHIP:
 								break;
 							}
 
-							sh = cmalloc (sizeof (ship));
-							memset (sh,0,sizeof (ship));
-
-							sh->type = i;
+							sh = createship(r, i);
 							sh->left = shipcost[i];
-
-							do
-							{
-								sh->no++;
-								sprintf (sh->name,"Ship %d",sh->no);
-							}
-							while (findship (sh->no));
-
-							addlist (&r->ships,sh);
-
 							leave (r,u);
 							u->ship = sh;
 							u->owner = 1;
