@@ -144,6 +144,11 @@ void * game_get_regions(icursor ** ic) {
   return (void *)r_begin();
 }
 
+static void add_event(const char * event, ...)
+{
+  
+}
+
 struct igame svc = {
   &units,
   &regions,
@@ -151,4 +156,5 @@ struct igame svc = {
   
   &reset_game,
   &game_get_regions,
+  &add_event,
 };

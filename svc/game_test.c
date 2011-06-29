@@ -4,6 +4,7 @@
 #include "unit.h"
 #include "../platform.h"
 #include <cutest/CuTest.h>
+#include <errno.h>
 
 static void test_game_reset(CuTest * tc) {
   struct region * r;
@@ -40,8 +41,15 @@ static void test_game_reset(CuTest * tc) {
   CuAssertPtrEquals(tc, 0, svc.units->get(uid));
 }
 
+static void test_add_event_does_not_crash(CuTest * tc)
+{
+  svc.add_event("test", 42);
+  CuAssertIntEquals(tc, 0, errno);
+}
+
 void add_game_tests(CuSuite *suite)
 {
   SUITE_ADD_TEST(suite, test_game_reset);
+  SUITE_ADD_TEST(suite, test_add_event_does_not_crash);
 }
 

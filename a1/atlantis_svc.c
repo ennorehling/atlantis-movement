@@ -3,6 +3,7 @@
 #include <svc/unit.h>
 #include <svc/region.h>
 #include <svc/cursor.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
 
@@ -224,6 +225,11 @@ static void * game_get_regions(icursor ** icur)
   return regions;
 }
 
+static void game_add_event(const char * event, ...)
+{
+  fprintf(stdout, "unhandled event '%s'", event);
+}
+
 struct igame svc = {
   &svc_units,
   &svc_regions,
@@ -231,4 +237,5 @@ struct igame svc = {
   
   &game_reset,
   &game_get_regions,
+  &game_add_event,
 };

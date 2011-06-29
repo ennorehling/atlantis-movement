@@ -10,6 +10,7 @@ void test_interface(CuTest * tc)
 {
   CuAssertPtrNotNull(tc, svc.reset);
   CuAssertPtrNotNull(tc, svc.get_regions);
+  CuAssertPtrNotNull(tc, svc.add_event);
   CuAssertTrue(tc, 0!=svc.max_directions);
 
   CuAssertPtrNotNull(tc, svc.regions);
