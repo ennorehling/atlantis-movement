@@ -21,8 +21,13 @@
 #endif
 
 #include "atlantis.h"
+#ifdef NEW_LOGIC
+#include <svc/game.h>
+#include "../logic/logic.h"
+#endif
 
 #undef UNLINK_EXISTING_REPORTS
+#undef EXPANDING_WORLD
 
 typedef struct order
 {
@@ -3710,26 +3715,34 @@ region *movewhere (region *r)
 	switch (getkeyword ())
 	{
 		case K_NORTH:
+#ifdef EXPANDING_WORLD
 			if (!r->connect[0])
 				makeblock (r->x,r->y - 1);
+#endif
 			r2 = r->connect[0];
 			break;
 
 		case K_SOUTH:
+#ifdef EXPANDING_WORLD
 			if (!r->connect[1])
 				makeblock (r->x,r->y + 1);
+#endif
 			r2 = r->connect[1];
 			break;
 
 		case K_EAST:
+#ifdef EXPANDING_WORLD
 			if (!r->connect[2])
 				makeblock (r->x + 1,r->y);
+#endif
 			r2 = r->connect[2];
 			break;
 
 		case K_WEST:
+#ifdef EXPANDING_WORLD
 			if (!r->connect[3])
 				makeblock (r->x - 1,r->y);
+#endif
 			r2 = r->connect[3];
 			break;
 	}
@@ -3739,6 +3752,9 @@ region *movewhere (region *r)
 
 void process_movement(void)
 {
+#ifdef NEW_LOGIC
+	do_movement();
+#else
 	region *r, *r2;
 	unit *u, *u2, *u3;
 
@@ -3873,7 +3889,7 @@ void process_movement(void)
 
 			u = u2;
 		}
-
+#endif
 }
 void processorders (void)
 {
@@ -5410,10 +5426,10 @@ void processorders (void)
 			}
 		}
 
-			/* MOVE and SAIL orders */
+	/* MOVE and SAIL orders */
 	process_movement();
 
-			/* Do production orders */
+	/* Do production orders */
 
 	puts ("Processing production orders...");
 
@@ -6660,10 +6676,14 @@ void addunits (void)
 void resetgame(void)
 {
 	regions = 0;
+#ifdef NEW_LOGIC
+	svc.reset();
+#endif
 }
 
 void initgame (void)
 {
+	resetgame();
 #ifdef TODO
 	int i;
 	struct FIND *fd;
