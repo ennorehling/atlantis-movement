@@ -230,7 +230,7 @@ static void * game_get_regions(icursor ** icur)
 static void game_add_event(const char * event, ...)
 {
   va_list va;
-  if (strcmp(event, "illegal_move")) {
+  if (strcmp(event, "illegal_move")==0) {
     unit *u;
     region *r1, *r2;
     va_start(va, event);
@@ -245,8 +245,9 @@ static void game_add_event(const char * event, ...)
     if (r1 && r1->terrain==T_OCEAN) {
       mistake (u->faction, u->thisorder, "Currently at sea");
     }
+  } else {
+    fprintf(stdout, "unhandled event '%s'\n", event);
   }
-  fprintf(stdout, "unhandled event '%s'\n", event);
 }
 
 struct igame svc = {
