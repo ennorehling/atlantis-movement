@@ -214,6 +214,7 @@ static int advance_next_regions(void ** cursor, int n)
     if (*rp == limbo) --i;
     rp = &(*rp)->next;
   }
+  *cursor = *rp;
   return i;
 }
 

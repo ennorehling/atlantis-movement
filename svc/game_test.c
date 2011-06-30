@@ -47,7 +47,7 @@ static void test_add_event_does_not_crash(CuTest * tc)
   CuAssertIntEquals(tc, 0, errno);
 }
 
-static void test_region_iteration(CuTest * tc)
+static void test_get_regions(CuTest * tc)
 {
   struct region * results[4];
   void * cur;
@@ -72,13 +72,14 @@ static void test_region_iteration(CuTest * tc)
   CuAssertIntEquals(tc, 7, n);
 
   CuAssertIntEquals(tc, 3, icur->advance(&cur, 4));
+  CuAssertIntEquals(tc, 0, icur->advance(&cur, 4));
   if (icur->destroy) icur->destroy(cur);
 }
 
 void add_game_tests(CuSuite *suite)
 {
   SUITE_ADD_TEST(suite, test_game_reset);
-  SUITE_ADD_TEST(suite, test_region_iteration);
+  SUITE_ADD_TEST(suite, test_get_regions);
   SUITE_ADD_TEST(suite, test_add_event_does_not_crash);
 }
 

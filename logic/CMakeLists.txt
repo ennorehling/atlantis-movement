@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.4)
-project (logic)
+project (logic C)
 
 include_directories (..)
 
@@ -12,3 +12,4 @@ add_executable (
   ../cutest/CuTest.c
   ${MOCK_SRCS}
 )
+add_test(movement_test movement_test)
